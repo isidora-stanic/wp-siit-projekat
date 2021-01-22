@@ -1,5 +1,5 @@
 # wp-siit-projekat
 Web programiranje - projekat - 2020
 
-Isidora Stanić sw-16-2018
+Isidora Stanić sw-16-2018\n
 Matija Matović sw-16-2018
