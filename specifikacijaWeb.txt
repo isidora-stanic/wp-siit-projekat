@@ -1,0 +1,163 @@
+Beans:
+-Korisnik:
+	+Username: String !!!ID
+	+Password: String
+	+Name: String
+	+Surname: String
+	+Gender: Enum
+	+Birth_date: Java.util.Date
+	+Role (Admin, Seller, Buyer): Enum
+	+Active: bool  -> for logical delete
+  >> Buyer:
+	+Purchased_tickets: List<Ticket>    !!!TODO: Ticket class
+	+Loyalty_points: int
+	+Buyer_type: BuyerType:
+			>Type_name: Enum (Gold, Silver, Bronze)
+			>TicketDiscountForThisType: Double (0 < x < 1)
+			>Points_needed (Points needed to become this type)
+  >> Seller:
+	+Manifestations: List<Manifestation>	!!!TODO: Manifestation class
+
+
+-Manifestation:
+	+ID: String
+	+Name: String
+	+Type: Enum (concert, fesival, theatre, etc.) (Maybe string?)
+	+SpotsAvailable: int
+	+TicketsSold: int
+	+ManifestationTime: DateTime
+	+TicketPrice: Double
+	+Status: Enum (Active, Inactive)
+	+seenByAdmin: bool
+	+Location: Location
+	+Image: nmp
+	+isActive: bool for logical delete
+
+-Location:
+	+GeographicalWidht: double
+	+GeographicalHeight: double
+	+Address: Address:
+			>StreetNameAndNumber: String
+			>City: String
+			>ZIPCode: String
+	* Override equals(), on self.widht = o.width, self.height = o.heigh
+
+-Ticket:
+	+ID: String
+	+ManifestationID: string
+	+ManifestationTime: DateTime
+	+Price: Double
+	+BuyerName: String  !!!Buyers name and surname
+	+Status: Enum (Reserved, Cancelled)
+	+Type: Enum (VIP, Regular, FanPit)
+	+isActive: bool for logical delete
+	!!! Each ticket has a unique ID, so i should generate this somehow
+	!!! This could be done as a redni broj prodate karte
+	!!! Where a manifestation holds a count of tickets sold
+
+-Comment:
+	+User: String !!!User's username
+	+ManifestationID: String
+	+ApprovedBySeller: bool
+	+CommentText: String
+	+ManifestationRating: int (1 to 5)
+	+isActive: bool for logical delete
+
+FUNCTIONALITIES
+---------------
+-Registration:
+	- New user becomes a Buyer upon registration
+	- Admins are loaded from a text file, and cannot be added later
+	- Sellers are registered by an admin. Buyer cannot become a seller
+-Logging in:
+	- All registered users can see their profiles
+	- All registered users can change their data
+	- ADMINS can see all the registered users and their data
+	- SELLERS can see all their manifestations, ticket reservations
+	and the buyers that reserved their tickets
+
+-Home page:
+	- All visitors can see all the manifestations
+	- Manifestation search on following criteria:
+		>Name
+		>Type
+		>DateTime
+		>Location
+		>Poster (image, wtf)?
+		>Price
+		>Avg. rating
+	- Search should also provide SORTING on the following criteria:
+		>Name
+		>Price
+		>DateTime
+		>Location
+	- Search should also provide FILTERING on the following criteria:
+		>Type
+		>Display of non-sold-out manifestations
+-Mainfestation page:
+	- Should display all the manifestation info, comments, and rating
+	- Should display a location map
+
+-Sellers:
+	- Can add new manifestations
+	- When adding a manifestation, no other manifestation can be held
+	at that time, at that place
+		*This can be implemented by having a hash map of locations,
+		Where each location has a list of times when they are busy
+	- New manifestation has status Inactive. To become active ADMIN
+	must approve it. This can be achieved by adding a field adminSeen
+	in manifestation, and returning all that arent seen by admin
+	- Sellers can change manifestation data
+
+-Tickets:
+	- All BUYERS can see all their tickets on their profile
+	- All BUYERS can see all their reserved cards
+	- BUYERS can search through their tickets on:
+		-Manifestation name
+		-Ticket price (within a given interval)
+		-Date and Time (within a given time interval)
+	- BUYERS can SORT their tickets on:
+		-Manifestation name
+		-Ticket price
+		-Date time
+	- BUYERS can FILTER their tickets on:
+		-Ticket type
+		-Ticket status
+	- SELLERS can see all the reserved ticets
+	- ADMINS can see all the tickets
+	- FAN_PIT_PRICE = 2 * REGULAR_PRICE
+	  VIP_PRICE = 4 * REGULAR_PRICE
+	- Only BUYERS can reserve tickets
+	- BUYERS can reserve one or more tickets
+	- When BUYERS reserve a card they get loyalty points:
+		point_no = (total_price/1000)*133
+	- BUYERS can cancel reservations 7 days before the manifestation
+	- If BUYERS cancel a reservations they lose points:
+		point_no = (ticket_price/1000)*133*4
+
+-Comments:
+	- BUYERS that reserved a ticket for a manifestation can leave
+	a comment on the manifestation, AFTER it has finished
+	- Buyers can see comments that have been approved by the SELLER
+	- SELLERS and ADMINS can see all the comments
+
+-Users:
+	- ADMIN can see all the users
+	- ADMIN can search all the users by:
+		>Name
+		>Surname
+		>Username
+	- ADMIN can sort all the users by:
+		>Name
+		>Surname
+		>Username
+		>No. of loyalty points
+	- ADMIN can filter all the users by:
+		>Role
+		>Type 
+	- ADMIN can see sketchy users (if they have more than 5 cancelations
+	in the last month)
+	- ADMIN can block registered users (This seems the same as deleting)
+-Search:
+	- Everybody should search on multiple criteria at once??
+
