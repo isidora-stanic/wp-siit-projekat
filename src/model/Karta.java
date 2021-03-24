@@ -12,9 +12,11 @@ public class Karta {
     private Status status;
     public enum Tip {REGULAR, VIP, FAN_PIT}
     private Tip tip;
+    private boolean obrisan;
 
     public Karta() {
         this.status = Status.REZERVISANO;
+        this.obrisan = false;
     }
 
     public Karta(String ID, String manifestacijaID, Date datumManifestacije, double cena, String imeKupca, Tip tip) {
@@ -81,5 +83,13 @@ public class Karta {
 
     public void setTip(Tip tip) {
         this.tip = tip;
+    }
+
+    public boolean isObrisan() {
+        return obrisan;
+    }
+
+    public void setObrisan(boolean obrisan) {
+        this.obrisan = obrisan;
     }
 }
