@@ -10,7 +10,7 @@ Vue.component("navbar", {
     template: `
         <nav class="navbar navbar-expand-md navbar-light">
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
-                <a class="navbar-brand" href="#">TicketMix</a>
+                <a class="navbar-brand" href="/">TicketMix</a>
                 <ul class="navbar-nav mr-auto">
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">Kontekstni
@@ -35,7 +35,7 @@ Vue.component("navbar", {
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
                     <li v-if="korisnik===null" class="nav-item">
-                        <a class="nav-link font-weight-bold" href="#">Prijava</a>
+                        <a class="nav-link font-weight-bold" href="#" @click.prevent="redirect('login')">Prijava</a>
                     </li>
                     <li v-if="korisnik===null" class="nav-item">
                         <a class="nav-link font-weight-bold" href="#">Registracija</a>
@@ -50,6 +50,9 @@ Vue.component("navbar", {
     methods: {
         loggedIn() {
             return localStorage.getItem('user')
+        },
+        redirect(route) {
+            this.$router.push('/'+route)
         }
     }
 })
