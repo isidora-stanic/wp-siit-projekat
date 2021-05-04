@@ -38,7 +38,7 @@ Vue.component("navbar", {
                         <a class="nav-link font-weight-bold" href="#" @click.prevent="redirect('login')">Prijava</a>
                     </li>
                     <li v-if="korisnik===null" class="nav-item">
-                        <a class="nav-link font-weight-bold" href="#">Registracija</a>
+                        <a class="nav-link font-weight-bold" href="#" @click.prevent="redirect('register')">Registracija</a>
                     </li>
                     <li v-else class="nav-tem">
                         <a class="nav-link font-weight-bold" href="#">Odjava</a>
