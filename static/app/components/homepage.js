@@ -1,7 +1,7 @@
 Vue.component("homepage", {
     data: function() {
         return {
-            manifestacije: null
+            manifestacije: []
         }
     },
     template: `
@@ -81,10 +81,10 @@ Vue.component("homepage", {
                         Sortiraj
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"">Ime</a>
-                        <a class="dropdown-item" href="#">Cena</a>
-                        <a class="dropdown-item" href="#">Vreme</a>
-                        <a class="dropdown-item" href="#">Lokacija</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('ime')">Ime</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('cena')">Cena</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('vreme')">Vreme</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('lokacija')">Lokacija</a>
                     </div>
                 </div>
                 
@@ -116,7 +116,35 @@ Vue.component("homepage", {
     },
     methods: {
         posetiManifestaciju(manifestacijaID) {
-            alert(manifestacijaID)
+            this.$router.push('/manifestation/'+manifestacijaID);
+        },
+        sortirajManifestacije(kriterijum){
+         this.manifestacije.sort(function compareFn(a, b) {
+            if (kriterijum === "ime"){
+                return a.ime.localeCompare(b.ime);
+            } else if (kriterijum === "cena"){
+                if (a.cenaKarte < b.cenaKarte) return -1;
+                if (a.cenaKarte > b.cenaKarte) return 1;
+                return 0;
+            } else if (kriterijum === "vreme"){
+                if (Date.parse(a.vremeOdrzavanja) < Date.parse(b.vremeOdrzavanja)) return -1;
+                if (Date.parse(a.vremeOdrzavanja) > Date.parse(b.vremeOdrzavanja)) return 1;
+                return 0;
+            } else if (kriterijum === "lokacija"){
+                aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
+                bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
+                return aAddress.localeCompare(bAddress);
+            }
+            return 0;
+//             if (a is less than b by some ordering criterion) {
+//               return -1;
+//             }
+//             if (a is greater than b by the ordering criterion) {
+//               return 1;
+//             }
+//              a must be equal to b
+//             return 0;
+           });
         }
     }
 })
