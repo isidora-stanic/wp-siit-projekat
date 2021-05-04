@@ -16,7 +16,8 @@
         "mesto": "Uzice",
         "postanskiBroj": "31000"
       }
-    }
+    },
+    "slika": "zvonko_bogdan_2019.jpg"
   },
   {
     "ID": "2",
@@ -35,7 +36,8 @@
         "mesto": "Uzice",
         "postanskiBroj": "31000"
       }
-    }
+    },
+    "slika": "zvonko_bogdan_2019.jpg"
   },
   {
     "ID": "3",
@@ -54,7 +56,8 @@
         "mesto": "Uzice",
         "postanskiBroj": "31000"
       }
-    }
+    },
+    "slika": "zvonko_bogdan_2019.jpg"
   },
   {
     "ID": "4",
@@ -73,6 +76,7 @@
         "mesto": "Uzice",
         "postanskiBroj": "31000"
       }
-    }
+    },
+    "slika": "zvonko_bogdan_2019.jpg"
   }
 ]
