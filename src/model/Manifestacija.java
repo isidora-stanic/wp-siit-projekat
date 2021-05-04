@@ -13,13 +13,14 @@ public class Manifestacija {
     public enum Status {AKTIVNA, NEAKTIVNA, ODBIJENA}
     private Status status;
     private Lokacija lokacija;
+    private String slika;
 
     public Manifestacija() {
         this.prodatoKarata = 0;
         this.status = Status.NEAKTIVNA;
     }
 
-    public Manifestacija(String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja, Double cenaKarte, Lokacija lokacija) {
+    public Manifestacija(String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja, Double cenaKarte, Lokacija lokacija, String slika) {
         this();
         this.ID = ID;
         this.ime = ime;
@@ -28,6 +29,7 @@ public class Manifestacija {
         this.vremeOdrzavanja = vremeOdrzavanja;
         this.cenaKarte = cenaKarte;
         this.lokacija = lokacija;
+        this.slika = slika;
     }
 
     public String getID() {
@@ -100,5 +102,13 @@ public class Manifestacija {
 
     public void setLokacija(Lokacija lokacija) {
         this.lokacija = lokacija;
+    }
+
+    public String getSlika() {
+        return slika;
+    }
+
+    public void setSlika(String slika) {
+        this.slika = slika;
     }
 }
