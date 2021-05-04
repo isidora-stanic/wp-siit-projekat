@@ -2,7 +2,8 @@ Vue.component("login", {
     data () {
         return {
             username: '',
-            password: ''
+            password: '',
+            formError: false
         }
     },
     template: `
@@ -21,6 +22,12 @@ Vue.component("login", {
                             <input type="password" class="form-control password" id="password" 
                             placeholder="Lozinka..." name="password" v-model="password">
                         </div>
+                        <transition name="fade">
+                            <div v-if="formError">
+                              <small style="color: red;">Popunite sva polja!</small>
+                              <hr />
+                            </div>
+                        </transition>
                         <button type="button" class="btn btn-primary btn-customized" @click="logIn">Prijava</button>
                     </form>
                 </div>
@@ -29,7 +36,26 @@ Vue.component("login", {
     `,
     methods: {
         logIn() {
-            alert(this.username + ' ' + this.password)
+            if (!(this.username && this.password)) {
+                this.formError = true
+                return
+            }
+            let loginData = {
+                username: this.username,
+                password: this.password
+            }
+            axios
+                .post('rest/login', loginData)
+                .then(response => {
+                    console.log(response.data)
+                    localStorage.setItem('user', JSON.stringify(response.data))
+                    this.$router.push('/')
+                    window.location.reload()
+                })
+                .catch(response => {
+                    console.log(response.data)
+                    alert('Neispravni korisničko ime ili lozinka! Pokušajte ponovo')
+                })
         }
     }
 })
