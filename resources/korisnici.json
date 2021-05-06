@@ -1,0 +1,22 @@
+[ [ "model.Administrator", {
+  "username" : "admin",
+  "password" : "admin",
+  "ime" : "adminko",
+  "prezime" : "adminic",
+  "pol" : "m",
+  "datumRodjenja" : 1620142530328,
+  "uloga" : "ADMIN",
+  "korisnikAktivan" : true
+} ], [ "model.Kupac", {
+  "username" : "matija",
+  "password" : "m1234",
+  "ime" : "matija",
+  "prezime" : "matovic",
+  "pol" : "m",
+  "datumRodjenja" : 1620142530328,
+  "uloga" : "KUPAC",
+  "korisnikAktivan" : true,
+  "sakupljenihPoena" : 0,
+  "tip" : "BRONZE",
+  "kupljeneKarte" : [ "java.util.ArrayList", [ ] ]
+} ] ]
