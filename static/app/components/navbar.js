@@ -29,12 +29,12 @@ Vue.component("navbar", {
                         <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">{{trenutniKorisnik.uloga}}
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <template v-if="trenutniKorisnik.uloga==ADMIN">
+                            <template v-if="trenutniKorisnik.uloga=='ADMIN'">
                                 <li><a class="nav-link" href="#">ADMIN 1</a></li>
                                 <li><a class="nav-link" href="#">ADMIN 2</a></li>
                                 <li><a class="nav-link" href="#">ADMIN 3</a></li>
                             </template>
-                            <template v-else-if="trenutniKorisnik.uloga==KUPAC">
+                            <template v-else-if="trenutniKorisnik.uloga=='KUPAC'">
                                 <li><a class="nav-link" href="#">KUPAC 1</a></li>
                                 <li><a class="nav-link" href="#">KUPAC 2</a></li>
                                 <li><a class="nav-link" href="#">KUPAC 3</a></li>
