@@ -186,7 +186,25 @@ Vue.component("cards", {
                            }
                        }
                      }))
-           }
+            } else if (this.korisnickaUloga === 'PRODAVAC') {
+                const manifestacijeReq = axios.get('rest/manifestacije')
+                const karteReq = axios.get('rest/karte-prodavca/' + this.korisnickoIme)
+                axios.all([manifestacijeReq, karteReq])
+                .then(axios.spread((...responses) => {
+                 this.manifestacije = responses[0].data
+                 this.karte = responses[1].data
+                 for (let k of this.karte) {
+                    for (let m of this.manifestacije) {
+                        console.log(k.manifestacijaID)
+                        if (k.manifestacijaID == m.ID){
+                            console.log(k.manifestacijaID + '\n-------------')
+                            k['manifestacija'] = m
+                            break
+                        }
+                    }
+                }
+                }))
+            }
 
 
         };

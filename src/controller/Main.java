@@ -66,6 +66,17 @@ public class Main {
             return g.toJson(karte);
         });
 
+        get("/rest/karte-prodavca/:username", (req, res) -> {
+            res.type("application/json");
+            Prodavac u = (Prodavac) userDAO.getKorisnikByUsername(req.params(":username"));
+            List<String> manifIDs = u.getManifestacije();
+            ArrayList<Karta> karte = new ArrayList<>();
+            for (String mID : manifIDs) {
+                karte.addAll(cardDAO.getKartaByManifID(mID));
+            }
+            return g.toJson(karte);
+        });
+
         post("/rest/register", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
 
