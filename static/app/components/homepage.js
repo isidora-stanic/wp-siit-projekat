@@ -91,18 +91,23 @@ Vue.component("homepage", {
                 <br /><br />
                 <hr />
                 
-                <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px"
+                 <div class="jumbotron row" style="padding-top: 15px; padding-bottom: 15px"
                  v-for="manifestacija in manifestacije"
                  :key="manifestacija.ID">
-                    <h3>{{manifestacija.ime}}</h3>
-                    <hr />
-                    <p>{{manifestacija.vremeOdrzavanja}} | {{manifestacija.tip}}</p>
-                    <p>Cena karte: {{manifestacija.cenaKarte}}</p>
-                    <p>{{manifestacija.lokacija.adresa.ulicaIBroj}}, {{manifestacija.lokacija.adresa.mesto}}</p>
-                    <hr />
-                    <button type="button" class="btn btn-lg btn-primary" @click="posetiManifestaciju(manifestacija.ID)">
-                        Detalji
-                    </button>
+                     <div class="col" style="overflow: hidden; height: 250px;">
+                         <img class="" v-bind:src="'../images/' + manifestacija.slika">
+                     </div>
+                     <div class="col">
+                        <h3>{{manifestacija.ime}}</h3>
+                        <hr />
+                        <p>{{manifestacija.vremeOdrzavanja}} | {{manifestacija.tip}}</p>
+                        <p>Cena karte: {{manifestacija.cenaKarte}}</p>
+                        <p>{{manifestacija.lokacija.adresa.ulicaIBroj}}, {{manifestacija.lokacija.adresa.mesto}}</p>
+                        <hr />
+                        <button type="button" class="btn btn-lg btn-primary" @click="posetiManifestaciju(manifestacija.ID)">
+                            Detalji
+                        </button>
+                     </div>
                 </div>
             </div>
         </div>
