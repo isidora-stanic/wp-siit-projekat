@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CardDAO {
@@ -33,6 +34,15 @@ public class CardDAO {
             return this.karteHashMap.get(id);
 
         return null;
+    }
+
+    public List<Karta> getKartaByManifID(String id) {
+        List<Karta> karteLista = new ArrayList<>();
+        for (Karta k : karte) {
+            if (k.getManifestacijaID().equals(id))
+                karteLista.add(k);
+        }
+        return karteLista;
     }
 
     public void loadKarte() throws IOException {
