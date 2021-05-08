@@ -25,16 +25,16 @@ Vue.component("navbar", {
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <a class="navbar-brand" href="/">TicketMix</a>
                 <ul class="navbar-nav mr-auto">
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">Kontekstni
+                    <li class="dropdown nav-item" v-if="loggedIn">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">{{trenutniKorisnik.uloga}}
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <template v-if="korisnik&&korisnik.uloga==ADMIN">
+                            <template v-if="trenutniKorisnik.uloga==ADMIN">
                                 <li><a class="nav-link" href="#">ADMIN 1</a></li>
                                 <li><a class="nav-link" href="#">ADMIN 2</a></li>
                                 <li><a class="nav-link" href="#">ADMIN 3</a></li>
                             </template>
-                            <template v-else-if="korisnik&&korisnik.uloga==KUPAC">
+                            <template v-else-if="trenutniKorisnik.uloga==KUPAC">
                                 <li><a class="nav-link" href="#">KUPAC 1</a></li>
                                 <li><a class="nav-link" href="#">KUPAC 2</a></li>
                                 <li><a class="nav-link" href="#">KUPAC 3</a></li>
