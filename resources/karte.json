@@ -12,8 +12,8 @@
   {
     "ID": "0karaktera",
     "manifestacijaID": "2",
-    "datumManifestacije": "May 4, 2021, 8:04:25 PM",
-    "cena": 1000.0,
+    "datumManifestacije": "May 4, 2021, 9:04:25 PM",
+    "cena": 900.0,
     "imeKupca": "Kupac 1",
     "status": "REZERVISANO",
     "tip": "FAN_PIT",
@@ -21,11 +21,11 @@
   },
   {
     "ID": "karaktera.",
-    "manifestacijaID": "3",
-    "datumManifestacije": "May 4, 2021, 8:04:25 PM",
-    "cena": 1000.0,
+    "manifestacijaID": "1",
+    "datumManifestacije": "May 4, 2021, 3:04:25 AM",
+    "cena": 800.0,
     "imeKupca": "Kupac 2",
-    "status": "REZERVISANO",
+    "status": "OTKAZANO",
     "tip": "REGULAR",
     "obrisan": false
   }

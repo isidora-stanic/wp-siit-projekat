@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static spark.Spark.*;
 
@@ -22,8 +23,11 @@ public class Main {
     private static final Gson g = new Gson();
 
     public static void main(String[] args) throws IOException {
+//        dumpUsers();
+
         manifestationDAO.loadManifestacije();
         userDAO.loadKorisnici();
+        cardDAO.loadKarte();
 
         staticFiles.externalLocation(new File("./static").getCanonicalPath());
         port(8080);
@@ -45,12 +49,22 @@ public class Main {
             return g.toJson(m);
         });
 
-
-        cardDAO.loadKarte();
         get("/rest/karte", (req, res) -> {
             res.type("application/json");
             ArrayList<Karta> karte = cardDAO.getKarte();
             return g.toJson(cardDAO.getKarte());
+        });
+
+        get("/rest/karte/:username", (req, res) -> {
+            res.type("application/json");
+            Kupac u = (Kupac) userDAO.getKorisnikByUsername(req.params(":username"));
+            List<String> karteIDs = u.getKupljeneKarte();
+            ArrayList<Karta> karte = new ArrayList<>();
+            for (String kID : karteIDs) {
+                karte.add(cardDAO.getKartaByID(kID));
+            }
+            return g.toJson(karte);
+        });
 
         post("/rest/register", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
@@ -128,11 +142,14 @@ public class Main {
         PrintWriter pw = new PrintWriter(new FileWriter("resources/karte.json", false));
         pw.println(g.toJson(karte));
         pw.close();
+    }
 
     public static void dumpUsers() throws IOException {
         Date date = new Date();
         Korisnik k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
         Korisnik k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
+
+        ((Kupac)k2).getKupljeneKarte().add("10karakter");
 
         userDAO.dodajKorisnika(k1);
         userDAO.dodajKorisnika(k2);

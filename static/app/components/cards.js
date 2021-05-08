@@ -1,7 +1,21 @@
 Vue.component("cards", {
     data: function() {
         return {
-            karte: []
+            karte: [],
+            manifestacije: [],
+            pretrazeneKarte: [],
+            listaKarata: [],
+            filter: {
+                tip: '',
+                status: ''
+            },
+            pretraga: {
+                manifestacija: '',
+                datumOd: null,
+                datumDo: null,
+                cenaOd: 0,
+                cenaDo: Number.MAX_SAFE_INTEGER
+            }
         }
     },
     template: `
@@ -11,14 +25,104 @@ Vue.component("cards", {
                     <h1>Karte</h1>
                 </div>
 
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="man-ime" class="form-control" placeholder="Pretraga (ime)" v-model="pretraga.manifestacija"/>
+                    </div>
+                    <button type="button" class="btn btn-primary">Traži</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailed-search">Detaljna pretraga</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter">Filtriranje</button>
+
+                    <!--DETALJNA PRETRAGA-->
+                    <div class="modal fade" id="detailed-search" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="src-lbl">Detaljna pretraga</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="man-manifestacija" class="col-form-label">Naziv manifestacije:</label>
+                                            <input type="text" class="form-control" id="man-manifestacija" v-model="pretraga.manifestacija">
+                                        </div>
+                                        <div class="row justify-content-between" style="margin: 5px;">
+                                            <div class="form-group col-xs-6">
+                                                <label for="man-dat-od" class="col-form-label">Datum od:</label>
+                                                <input type="date" class="form-control" id="man-dat-od" v-model="pretraga.datumOd">
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label for="man-dat-do" class="col-form-label">Datum do:</label>
+                                                <input type="date" class="form-control" id="man-dat-do" v-model="pretraga.datumDo">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between" style="margin: 5px;">
+                                            <div class="form-group col-xs-6">
+                                                <label for="man-cena-od" class="col-form-label">Cena od:</label>
+                                                <input type="number" class="form-control" id="man-cena-od" v-model="pretraga.cenaOd">
+                                            </div>
+                                            <div class="form-group col-xs-6">
+                                                <label for="man-cena-do" class="col-form-label">Cena do:</label>
+                                                <input type="number" class="form-control" id="man-cena-do" v-model="pretraga.cenaDo">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
+                                    <button type="button" class="btn btn-primary" @click="pretraziKarte()" data-dismiss="modal">Pretraži</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FILTER-->
+                    <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="src-lbl">Filtriranje</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="man-tip" class="col-form-label">Tip:</label>
+                                            <select v-model="filter.tip" id="man-tip">
+                                                <option>--- Izaberi tip ---</option>
+                                                <option value="REGULAR">Regular</option>
+                                                <option value="VIP">VIP</option>
+                                                <option value="FAN_PIT">Fan pit</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="man-status" class="col-form-label">Status:</label>
+                                            <select v-model="filter.status" id="man-status">
+                                                <option>--- Izaberi status ---</option>
+                                                <option value="REZERVISANO">Rezervisano</option>
+                                                <option value="OTKAZANO">Otkazano</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
+                                    <button type="button" class="btn btn-primary" @click="filtrirajKarte()" data-dismiss="modal">Filtriraj</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dropdown float-right">
                     <button class="btn btn-lg btn-light dropdown-toggle" data-toggle="dropdown">
                         Sortiraj
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" @click="sortirajKarte('ime')">Ime</a>
-                        <a class="dropdown-item" @click="sortirajKarte('cena')">Cena</a>
-                        <a class="dropdown-item" @click="sortirajKarte('vreme')">Vreme</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('ime')">Ime</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('cena')">Cena</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('vreme')">Vreme</a>
                     </div>
                 </div>
 
@@ -27,8 +131,9 @@ Vue.component("cards", {
 
                 <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px"
                  v-for="karta in karte"
-                 :key="karta.manifestacijaID">
-                    <h3>Kupac: {{karta.imeKupca}}</h3>
+                 :key="karta.id">
+                    <h3>{{karta.manifestacija.ime}}</h3>
+                    <h4>Kupac: {{karta.imeKupca}}</h4>
                     <hr />
                     <p>Datum: {{karta.datumManifestacije}}</p>
                     <p>Tip: {{karta.tip}}</p>
@@ -43,43 +148,105 @@ Vue.component("cards", {
         </div>
     `,
     mounted() {
-        axios
-            .get("rest/karte")
-            .then(response => {
-                this.karte = response.data
-            })
+        if (this.korisnik) {
+            if (this.korisnickaUloga === 'ADMIN') {
+                axios
+                    .get("rest/karte")
+                    .then(response => {
+                        this.karte = response.data;
+                        this.listaKarata = response.data;
+                        axios
+                            .get("rest/manifestacije")
+                            .then(response => {
+                                alert(response.data.length);
+                                this.manifestacije = response.data;
+                                 for (let k of this.karte) {
+                                    for (let m of this.manifestacije) {
+                                        console.log(k.manifestacijaID)
+                                        if (k.manifestacijaID == m.ID){
+                                            console.log(k.manifestacijaID + '\n-------------')
+                                            k['manifestacija'] = m
+                                            break
+                                        }
+                                    }
+                                }
+                                console.log(this.karte)
+                            });
+                    });
+            } else if (this.korisnickaUloga === 'KUPAC') {
+                axios
+                    .get("rest/karte/" + this.korisnickoIme)
+                    .then(response => {
+                       this.karte = response.data;
+                       this.listaKarata = response.data;
+                       axios
+                           .get("rest/manifestacije")
+                           .then(response => {
+                               alert(response.data.length);
+                               this.manifestacije = response.data;
+                               alert(this.manifestacije);
+                               for (let k of this.karte) {
+                                   for (let m of this.manifestacije) {
+                                       console.log(k.manifestacijaID)
+                                       if (k.manifestacijaID == m.ID){
+                                           console.log(k.manifestacijaID + '\n-------------')
+                                           k['manifestacija'] = m
+                                           break
+                                       }
+                                   }
+                               }
+                           });
+                    });
+           }
+
+
+        };
     },
     methods: {
         posetiManifestaciju(manifestacijaID) {
             this.$router.push('/manifestation/'+manifestacijaID);
         },
         sortirajKarte(kriterijum){
-         this.karte.sort(function compareFn(a, b) {
+        this.karte.sort(function compareFn(a, b) {
             if (kriterijum === "ime"){
-                return a.ime.localeCompare(b.ime);
+                return a.manifestacija.ime.localeCompare(b.manifestacija.ime);
             } else if (kriterijum === "cena"){
-                if (a.cenaKarte < b.cenaKarte) return -1;
-                if (a.cenaKarte > b.cenaKarte) return 1;
+                if (a.cena < b.cena) return -1;
+                if (a.cena > b.cena) return 1;
                 return 0;
             } else if (kriterijum === "vreme"){
-                if (Date.parse(a.vremeOdrzavanja) < Date.parse(b.vremeOdrzavanja)) return -1;
-                if (Date.parse(a.vremeOdrzavanja) > Date.parse(b.vremeOdrzavanja)) return 1;
+                if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return -1;
+                if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return 1;
                 return 0;
-            } else if (kriterijum === "lokacija"){
-                aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
-                bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
-                return aAddress.localeCompare(bAddress);
             }
             return 0;
-//             if (a is less than b by some ordering criterion) {
-//               return -1;
-//             }
-//             if (a is greater than b by the ordering criterion) {
-//               return 1;
-//             }
-//              a must be equal to b
-//             return 0;
-           });
+            });
+        },
+        pretraziKarte() {
+            this.pretrazeneKarte = [];
+            for (const k of this.karte) {
+                if ((k.cena >= this.pretraga.cenaOd && k.cena <= this.pretraga.cenaDo) &&
+                (k.datumManifestacije >= this.pretraga.datumOd && k.datumManifestacije <= this.pretraga.datumDo))
+                    this.pretrazeneKarte.push(k);
+            }
+            alert(JSON.stringify(this.pretrazeneKarte));
+            this.listaKarata = this.pretrazeneKarte;
+
+        },
+        filtrirajKarte() {
+            this.listaKarata = this.listaKarata.filter(x => (x.tip.includes(this.filter.tip) && x.status.includes(this.filter.status)));
+            alert(JSON.stringify(this.listaKarata));
+        },
+    },
+    computed: {
+        korisnik() {
+            return JSON.parse(localStorage.getItem('user'));
+        },
+        korisnickaUloga() {
+            return this.korisnik.uloga;
+        },
+        korisnickoIme() {
+            return this.korisnik.username;
         }
     }
 })
