@@ -93,7 +93,7 @@ public class Main {
                                 .parse(userMap.get("datumRodjenja"));
 
             if (userDAO.getKorisnikByUsername(username) != null) {
-                res.status(404);
+                res.status(400);
                 return "Korisnik sa tim korisničkim imenom već postoji";
             }
 
@@ -112,11 +112,11 @@ public class Main {
             String password = userMap.get("password");
             Korisnik k = userDAO.getKorisnikByUsername(username);
             if (k == null) {
-                res.status(404);
+                res.status(400);
                 return null;
             }
             if (!k.getPassword().equals(password)) {
-                res.status(404);
+                res.status(400);
                 return null;
             }
 
@@ -174,6 +174,54 @@ public class Main {
 
             return g.toJson(m);
         });
+      
+        post("/rest/add/manifestacija", (req, res) -> {
+            HashMap<String, String> manifestationMap = g.fromJson(req.body(), HashMap.class);
+            String ime = manifestationMap.get("ime");
+            String tip = manifestationMap.get("tip");
+            int ukupnoMesta = Integer.parseInt(manifestationMap.get("ukupnoMesta"));
+            double cenaKarte = Double.parseDouble(manifestationMap.get("cenaKarte"));
+            String ulicaIBroj = manifestationMap.get("ulicaIBroj");
+            String mesto = manifestationMap.get("mesto");
+            String postanskiBroj = manifestationMap.get("postanskiBroj");
+            String slika = manifestationMap.get("slika");
+
+            String vremeOdrzavanjaString = manifestationMap.get("vremeOdrzavanja");
+            Date vremeOdrzavanja = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(vremeOdrzavanjaString);
+
+            Adresa adresa = new Adresa(
+                    ulicaIBroj,
+                    mesto,
+                    postanskiBroj
+            );
+
+            Lokacija lokacija = new Lokacija(22, 44, adresa);
+
+            Manifestacija man = new Manifestacija(
+                    manifestationDAO.generateID(),
+                    ime,
+                    tip,
+                    ukupnoMesta,
+                    vremeOdrzavanja,
+                    cenaKarte,
+                    lokacija,
+                    slika
+            );
+
+            if (!manifestationDAO.ProveriDostupnost(man)) {
+                res.status(400);
+                return "Nije dostupno mesto u dato vreme";
+            }
+
+            String prodavacID = manifestationMap.get("prodavacID");
+            Prodavac prodavac = (Prodavac) userDAO.getKorisnikByUsername(prodavacID);
+            prodavac.getManifestacije().add(man.getID());
+
+            manifestationDAO.dodajManifestaciju(man);
+            manifestationDAO.saveManifestacije();
+            userDAO.saveKorisnici();
+            return "OK";
+        });
     }
 
     public static void dumpManifestations() throws IOException {
@@ -213,13 +261,9 @@ public class Main {
 
     public static void dumpUsers() throws IOException {
         Date date = new Date();
-        Administrator k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
-        Kupac k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
-        Prodavac k3 = new Prodavac("prodavac", "12345", "Milena", "Milenic", "f", date);
-
-        k2.getKupljeneKarte().add("10karakter");
-        k3.getManifestacije().add("1");
-        k3.getManifestacije().add("2");
+        Korisnik k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
+        Korisnik k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
+        Korisnik k3 = new Prodavac("prodavko", "p1234", "prodavomir", "prodic", "m", date);
 
         userDAO.dodajKorisnika(k1);
         userDAO.dodajKorisnika(k2);

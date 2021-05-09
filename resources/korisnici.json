@@ -4,7 +4,7 @@
   "ime" : "adminko",
   "prezime" : "adminic",
   "pol" : "m",
-  "datumRodjenja" : 1620573859826,
+  "datumRodjenja" : 1620485385826,
   "uloga" : "ADMIN",
   "korisnikAktivan" : true
 } ], [ "model.Kupac", {
@@ -13,20 +13,20 @@
   "ime" : "matija",
   "prezime" : "matovic",
   "pol" : "m",
-  "datumRodjenja" : 1620573859826,
+  "datumRodjenja" : 1620485385826,
   "uloga" : "KUPAC",
   "korisnikAktivan" : true,
   "sakupljenihPoena" : 0,
   "tip" : "BRONZE",
   "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "5577032237" ] ]
 } ], [ "model.Prodavac", {
-  "username" : "prodavac",
-  "password" : "12345",
-  "ime" : "Milena",
-  "prezime" : "Milenic",
-  "pol" : "f",
-  "datumRodjenja" : 1620573859826,
+  "username" : "prodavko",
+  "password" : "p1234",
+  "ime" : "prodavomir",
+  "prezime" : "prodic",
+  "pol" : "m",
+  "datumRodjenja" : 1620485385826,
   "uloga" : "PRODAVAC",
   "korisnikAktivan" : true,
-  "manifestacije" : [ "java.util.ArrayList", [ "1", "2" ] ]
+  "manifestacije" : [ "java.util.ArrayList", [ "1525766759", "2136850383" ] ]
 } ] ]

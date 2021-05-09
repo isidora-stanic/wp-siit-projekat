@@ -39,6 +39,13 @@ Vue.component("navbar", {
                                 <li><a class="nav-link" href="#">KUPAC 2</a></li>
                                 <li><a class="nav-link" href="#">KUPAC 3</a></li>
                             </template>
+                            <template v-else-if="trenutniKorisnik.uloga=='PRODAVAC'">
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('add/manifestation')">
+                                    DODAJ MANIFESTACIJU
+                                </a></li>
+                                <li><a class="nav-link" href="#">PREGLEDAJ MANIFESTACIJU</a></li>
+                                <li><a class="nav-link" href="#">PREGLEDAJ REZERVACIJE</a></li>
+                            </template>
                         </ul>
                       </li>
                     <li class="nav-item">

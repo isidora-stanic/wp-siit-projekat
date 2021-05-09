@@ -3,6 +3,7 @@ const register = {template: '<register></register>'}
 const login = {template: '<login></login>'}
 const logout = {template: '<logout></logout>'}
 const manifestation = {template: '<manifestation></manifestation>'}
+const manifestationForm = {template: '<manifestation-form></manifestation-form>'}
 const cards = {template: '<cards></cards>'}
 
 const router = new VueRouter({
@@ -14,7 +15,8 @@ const router = new VueRouter({
         {path: '/register', component: register},
         {path: '/logout', component: logout},
         {path: '/manifestation/:id', component: manifestation},
-        {path: '/cards', component: cards}
+        {path: '/add/manifestation', component: manifestationForm},
+        {path: '/cards', component: cards},
     ]
 })
 
