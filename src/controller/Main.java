@@ -72,7 +72,11 @@ public class Main {
             List<String> manifIDs = u.getManifestacije();
             ArrayList<Karta> karte = new ArrayList<>();
             for (String mID : manifIDs) {
-                karte.addAll(cardDAO.getKartaByManifID(mID));
+                List<Karta> manifs = cardDAO.getKartaByManifID(mID);
+                for (Karta k : manifs) {
+                    if (!(k.isObrisan() || k.getStatus() == Karta.Status.OTKAZANO))
+                        karte.add(k);
+                }
             }
             return g.toJson(karte);
         });
@@ -157,13 +161,17 @@ public class Main {
 
     public static void dumpUsers() throws IOException {
         Date date = new Date();
-        Korisnik k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
-        Korisnik k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
+        Administrator k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
+        Kupac k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
+        Prodavac k3 = new Prodavac("prodavac", "12345", "Milena", "Milenic", "f", date);
 
-        ((Kupac)k2).getKupljeneKarte().add("10karakter");
+        k2.getKupljeneKarte().add("10karakter");
+        k3.getManifestacije().add("1");
+        k3.getManifestacije().add("2");
 
         userDAO.dodajKorisnika(k1);
         userDAO.dodajKorisnika(k2);
+        userDAO.dodajKorisnika(k3);
         userDAO.saveKorisnici();
     }
 }
