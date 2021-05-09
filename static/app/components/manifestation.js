@@ -1,7 +1,13 @@
 Vue.component("manifestation", {
     data: function() {
         return {
-            manifestacija: null,
+            manifestacija: {
+                ime: '',
+                vremeOdrzavanja: '',
+                tip: '',
+                lokacija: { adresa: {ulicaIBroj: '', mesto: ''} },
+                cenaKarte: 0
+            },
 //            uzetoKarata: null,
             komentari: [],
             kupovina: {
@@ -29,11 +35,11 @@ Vue.component("manifestation", {
                         <h6>VIP: <b>{{manifestacija.cenaKarte * 4}}</b> RSD</h6>
                         <p>Preostalo karata: {{manifestacija.ukupnoMesta - manifestacija.prodatoKarata}}</p>
                         <hr/>
-                        <div class="row container ml-4">
+                        <div class="row container">
                                             <!--<button class="btn btn-secondary col" @click="kupovina.kolicina--">-</button>
-                                            <p class="col">{{uzetoKarata}}</p>
+                                            <p class="col">{{kupovina.kolicina}}</p>
                                             <button class="btn btn-secondary col" @click="kupovina.kolicina++">+</button>-->
-                            <div class="form-group">
+                            <div class="form-group ml-4">
                                 <label for="koliko" class="col-form-label">Količina:</label>
                                 <input id="koliko" class="" type="number" v-model="kupovina.kolicina" min="0" :max="manifestacija.ukupnoMesta - manifestacija.prodatoKarata">
                             </div>
