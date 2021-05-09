@@ -14,7 +14,9 @@ Vue.component("manifestation", {
                 tip: 'REGULAR',
                 manifestacijaID: '',
                 kolicina: 0,
-                cena: 0
+                cena: 0,
+                imeKupca: '',
+                username: '',
             }
         }
     },
@@ -76,6 +78,8 @@ Vue.component("manifestation", {
     `,
     mounted() {
         this.kupovina.manifestacijaID = this.$route.params.id;
+        this.kupovina.username = this.korisnickoIme;
+        this.kupovina.imeKupca = this.imeKorisnika;
         axios
             .get("rest/manifestacija/" + this.$route.params.id)
             .then(response => {
@@ -87,8 +91,32 @@ Vue.component("manifestation", {
     },
     methods: {
         kupi() {
+            if (this.kupovina.kolicina < 1) {
+                alert("Ne mozete kupiti 0 karata");
+                return;
+            }
             this.kupovina.cena = this.ukupnaCena;
             alert(JSON.stringify(this.kupovina));
+            if (!this.korisnik) {
+                alert('Niste ulogovani');
+            }
+            if (this.korisnickaUloga === "KUPAC") {
+                axios
+                    .post('rest/kupovina', this.kupovina)
+                    .then(response => {
+                        console.log(response.data)
+                        this.manifestacija = response.data;
+                        alert('Uspesna kupovina karte!');
+
+//                        localStorage.setItem('user', JSON.stringify(response.data))
+//                        this.$router.push('/')
+//                        window.location.reload()
+                    })
+                    .catch(response => {
+                        console.log(response.data)
+                        alert('Neuspesna kupovina karte, pokusajte ponovo!');
+                    })
+            }
         }
     },
     computed: {
@@ -97,6 +125,18 @@ Vue.component("manifestation", {
             if (this.kupovina.tip === "FAN_PIT") return this.kupovina.kolicina * this.manifestacija.cenaKarte * 2;
             if (this.kupovina.tip === "VIP") return this.kupovina.kolicina * this.manifestacija.cenaKarte * 4;
             return 0;
+        },
+        korisnik() {
+            return JSON.parse(localStorage.getItem('user'));
+        },
+        korisnickaUloga() {
+            return this.korisnik.uloga;
+        },
+        korisnickoIme() {
+            return this.korisnik.username;
+        },
+        imeKorisnika() {
+            return this.korisnik.ime + " " + this.korisnik.prezime;
         }
     }
 })

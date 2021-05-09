@@ -18,7 +18,7 @@
   "korisnikAktivan" : true,
   "sakupljenihPoena" : 0,
   "tip" : "BRONZE",
-  "kupljeneKarte" : [ "java.util.ArrayList", [ "10karakter" ] ]
+  "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "5577032237" ] ]
 } ], [ "model.Prodavac", {
   "username" : "prodavac",
   "password" : "12345",
