@@ -90,7 +90,7 @@ Vue.component("cards", {
                                         <div class="form-group">
                                             <label for="man-tip" class="col-form-label">Tip:</label>
                                             <select v-model="filter.tip" id="man-tip">
-                                                <option>--- Izaberi tip ---</option>
+                                                <!--<option>--- Izaberi tip ---</option>-->
                                                 <option value="REGULAR">Regular</option>
                                                 <option value="VIP">VIP</option>
                                                 <option value="FAN_PIT">Fan pit</option>
@@ -99,7 +99,7 @@ Vue.component("cards", {
                                         <div class="form-group">
                                             <label for="man-status" class="col-form-label">Status:</label>
                                             <select v-model="filter.status" id="man-status">
-                                                <option>--- Izaberi status ---</option>
+                                                <!--<option>--- Izaberi status ---</option>-->
                                                 <option value="REZERVISANO">Rezervisano</option>
                                                 <option value="OTKAZANO">Otkazano</option>
                                             </select>
