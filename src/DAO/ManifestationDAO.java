@@ -1,7 +1,9 @@
 package DAO;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Manifestacija;
+import org.opencv.core.Mat;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,11 +13,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class ManifestationDAO {
     private final ArrayList<Manifestacija> manifestacije = new ArrayList<>();
     private final Map<String, Manifestacija> manifestacijeHashMap = new HashMap<>();
-    private final Gson g = new Gson();
+    private final Gson g = new GsonBuilder().setPrettyPrinting().create();
 
     public ManifestationDAO() {}
 
@@ -48,5 +52,28 @@ public class ManifestationDAO {
         PrintWriter pw = new PrintWriter(new FileWriter("resources/manifestacije.json", false));
         pw.println(g.toJson(this.manifestacije));
         pw.close();
+    }
+
+    public boolean ProveriDostupnost(Manifestacija novaManifestacija) {
+        for (Manifestacija m : this.manifestacije) {
+            long diff_millis = Math.abs(m.getVremeOdrzavanja().getTime() - novaManifestacija.getVremeOdrzavanja().getTime());
+            long diff_in_minutes = TimeUnit.MINUTES.convert(diff_millis, TimeUnit.MILLISECONDS);
+            boolean istoMesto = novaManifestacija.getLokacija().getAdresa().equals(m.getLokacija().getAdresa()); /*&&
+                    novaManifestacija.getLokacija().equals(m.getLokacija()); */
+            if (istoMesto && diff_in_minutes < 30)
+                return false;
+        }
+        //TODO: Zavrsiti dodavanje manifestacija!!!
+        return true;
+    }
+
+    public String generateID() {
+        Random random = new Random(System.currentTimeMillis());
+        while (true) {
+            double rndDouble = random.nextDouble();
+            String generatedID = Double.toString(rndDouble).substring(2, 12);
+            if (!manifestacijeHashMap.containsKey(generatedID))
+                return generatedID;
+        }
     }
 }
