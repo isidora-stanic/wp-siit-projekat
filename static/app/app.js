@@ -4,6 +4,7 @@ const login = {template: '<login></login>'}
 const logout = {template: '<logout></logout>'}
 const manifestation = {template: '<manifestation></manifestation>'}
 const manifestationForm = {template: '<manifestation-form></manifestation-form>'}
+const cards = {template: '<cards></cards>'}
 
 const router = new VueRouter({
     mode: 'hash',
@@ -15,6 +16,7 @@ const router = new VueRouter({
         {path: '/logout', component: logout},
         {path: '/manifestation/:id', component: manifestation},
         {path: '/add/manifestation', component: manifestationForm},
+        {path: '/cards', component: cards},
     ]
 })
 

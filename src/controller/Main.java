@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.CardDAO;
 import DAO.ManifestationDAO;
 import DAO.UserDAO;
 import com.google.gson.Gson;
@@ -7,20 +8,26 @@ import com.google.gson.GsonBuilder;
 import model.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static spark.Spark.*;
 
 public class Main {
     private static final ManifestationDAO manifestationDAO = new ManifestationDAO();
+    private static final CardDAO cardDAO = new CardDAO();
     private static final UserDAO userDAO = new UserDAO();
     private static final Gson g = new Gson();
 
     public static void main(String[] args) throws IOException {
+//        dumpUsers();
+
         manifestationDAO.loadManifestacije();
         userDAO.loadKorisnici();
+        cardDAO.loadKarte();
 
         staticFiles.externalLocation(new File("./static").getCanonicalPath());
         port(8080);
@@ -40,6 +47,38 @@ public class Main {
 
             res.type("application/json");
             return g.toJson(m);
+        });
+
+        get("/rest/karte", (req, res) -> {
+            res.type("application/json");
+            ArrayList<Karta> karte = cardDAO.getKarte();
+            return g.toJson(cardDAO.getKarte());
+        });
+
+        get("/rest/karte/:username", (req, res) -> {
+            res.type("application/json");
+            Kupac u = (Kupac) userDAO.getKorisnikByUsername(req.params(":username"));
+            List<String> karteIDs = u.getKupljeneKarte();
+            ArrayList<Karta> karte = new ArrayList<>();
+            for (String kID : karteIDs) {
+                karte.add(cardDAO.getKartaByID(kID));
+            }
+            return g.toJson(karte);
+        });
+
+        get("/rest/karte-prodavca/:username", (req, res) -> {
+            res.type("application/json");
+            Prodavac u = (Prodavac) userDAO.getKorisnikByUsername(req.params(":username"));
+            List<String> manifIDs = u.getManifestacije();
+            ArrayList<Karta> karte = new ArrayList<>();
+            for (String mID : manifIDs) {
+                List<Karta> manifs = cardDAO.getKartaByManifID(mID);
+                for (Karta k : manifs) {
+                    if (!(k.isObrisan() || k.getStatus() == Karta.Status.OTKAZANO))
+                        karte.add(k);
+                }
+            }
+            return g.toJson(karte);
         });
 
         post("/rest/register", (req, res) -> {
@@ -151,11 +190,29 @@ public class Main {
         pw.close();
     }
 
+    public static void dumpCards() throws IOException {
+        Adresa adresa = new Adresa("Heroja Jerkovica 37", "Uzice", "31000");
+        Lokacija lok = new Lokacija(25, 35, adresa);
+        Date date = new Date();
+        //Manifestacija(
+        // String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja,
+        // Double cenaKarte, Lokacija lokacija)
+        Karta k1 = new Karta("10karakter", "1", new Date(), 1000.00, "Kupac 1", Karta.Tip.VIP);
+        Karta k2 = new Karta("0karaktera", "2", new Date(), 1000.00, "Kupac 1", Karta.Tip.FAN_PIT);
+        Karta k3 = new Karta("karaktera.", "3", new Date(), 1000.00, "Kupac 2", Karta.Tip.REGULAR);
+        Gson g = new GsonBuilder().setPrettyPrinting().create();
+        Karta[] karte = {k1, k2, k3};
+        PrintWriter pw = new PrintWriter(new FileWriter("resources/karte.json", false));
+        pw.println(g.toJson(karte));
+        pw.close();
+    }
+
     public static void dumpUsers() throws IOException {
         Date date = new Date();
         Korisnik k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
         Korisnik k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
         Korisnik k3 = new Prodavac("prodavko", "p1234", "prodavomir", "prodic", "m", date);
+
         userDAO.dodajKorisnika(k1);
         userDAO.dodajKorisnika(k2);
         userDAO.dodajKorisnika(k3);
