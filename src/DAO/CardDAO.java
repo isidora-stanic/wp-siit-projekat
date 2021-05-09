@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CardDAO {
     private final ArrayList<Karta> karte = new ArrayList<>();
@@ -58,5 +55,16 @@ public class CardDAO {
         PrintWriter pw = new PrintWriter(new FileWriter("resources/karte.json", false));
         pw.println(g.toJson(this.karte));
         pw.close();
+    }
+
+    public String generateID() {
+        Random random = new Random(System.currentTimeMillis());
+        while (true){
+            double rndDouble = random.nextDouble();
+            String generatedID = Double.toString(rndDouble).substring(2,12);
+            if (!karteHashMap.containsKey(generatedID))
+                return generatedID;
+        }
+
     }
 }

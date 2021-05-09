@@ -90,7 +90,7 @@ Vue.component("cards", {
                                         <div class="form-group">
                                             <label for="man-tip" class="col-form-label">Tip:</label>
                                             <select v-model="filter.tip" id="man-tip">
-                                                <option>--- Izaberi tip ---</option>
+                                                <!--<option>--- Izaberi tip ---</option>-->
                                                 <option value="REGULAR">Regular</option>
                                                 <option value="VIP">VIP</option>
                                                 <option value="FAN_PIT">Fan pit</option>
@@ -99,7 +99,7 @@ Vue.component("cards", {
                                         <div class="form-group">
                                             <label for="man-status" class="col-form-label">Status:</label>
                                             <select v-model="filter.status" id="man-status">
-                                                <option>--- Izaberi status ---</option>
+                                                <!--<option>--- Izaberi status ---</option>-->
                                                 <option value="REZERVISANO">Rezervisano</option>
                                                 <option value="OTKAZANO">Otkazano</option>
                                             </select>
@@ -131,7 +131,7 @@ Vue.component("cards", {
 
                 <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px"
                  v-for="karta in karte"
-                 :key="karta.id">
+                 :key="karta.ID">
                     <h3>{{karta.manifestacija.ime}}</h3>
                     <h4>Kupac: {{karta.imeKupca}}</h4>
                     <hr />
@@ -149,6 +149,7 @@ Vue.component("cards", {
     `,
     mounted() {
         if (this.korisnik) {
+        alert(JSON.stringify(this.korisnik));
             if (this.korisnickaUloga === 'ADMIN') {
             //rest/mamifestacije i rest/karte
                 const manifestacijeReq = axios.get('rest/manifestacije')
@@ -175,6 +176,9 @@ Vue.component("cards", {
                      .then(axios.spread((...responses) => {
                         this.manifestacije = responses[0].data
                         this.karte = responses[1].data
+                        console.log('AAAAAAAAAAAAAAAAAAAAAA')
+                        console.log(this.manifestacije)
+                        console.log(this.karte)
                         for (let k of this.karte) {
                            for (let m of this.manifestacije) {
                                console.log(k.manifestacijaID)

@@ -123,6 +123,58 @@ public class Main {
             return g.toJson(k);
         });
 
+        post("/rest/kupovina", (req, res) -> {
+            HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+            /*kupovina: {
+                tip: 'REGULAR',
+                manifestacijaID: '',
+                kolicina: 0,
+                cena: 0
+            }*/
+            String tip = userMap.get("tip");
+            String manifestacijaID = userMap.get("manifestacijaID");
+            String kolicina = userMap.get("kolicina");
+            String cena = String.valueOf(userMap.get("cena"));
+            String imeKupca = userMap.get("imeKupca");
+            String username = userMap.get("username");
+
+            Manifestacija m = manifestationDAO.getManifestacijaByID(manifestacijaID);
+            m.setProdatoKarata(m.getProdatoKarata() + Integer.parseInt(kolicina));
+
+            Karta.Tip tipKarte;
+            if (tip.equals("REGULAR")) tipKarte = Karta.Tip.REGULAR;
+            else if (tip.equals("FAN_PIT")) tipKarte = Karta.Tip.FAN_PIT;
+            else tipKarte = Karta.Tip.VIP;
+
+            Kupac k = (Kupac) userDAO.getKorisnikByUsername(username);
+
+            int kolicinaKupljenihKarata = Integer.parseInt(kolicina);
+            for (int i = 0; i < kolicinaKupljenihKarata; i++) {
+                String newID = cardDAO.generateID();
+                cardDAO.dodajKartu(new Karta(newID, manifestacijaID, m.getVremeOdrzavanja(), Double.parseDouble(cena), imeKupca, tipKarte));
+
+                k.getKupljeneKarte().add(newID);
+            }
+
+//            if (k == null) {
+//                res.status(404);
+//                return null;
+//            }
+//            if (!k.getPassword().equals(password)) {
+//                res.status(404);
+//                return null;
+//            }
+            cardDAO.saveKarte();
+            manifestationDAO.saveManifestacije();
+            userDAO.saveKorisnici();
+
+//            manifestationDAO.loadManifestacije();
+//            userDAO.loadKorisnici();
+//            cardDAO.loadKarte();
+
+            return g.toJson(m);
+        });
+      
         post("/rest/add/manifestacija", (req, res) -> {
             HashMap<String, String> manifestationMap = g.fromJson(req.body(), HashMap.class);
             String ime = manifestationMap.get("ime");
