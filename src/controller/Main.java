@@ -107,9 +107,10 @@ public class Main {
         Date date = new Date();
         Korisnik k1 = new Administrator("admin", "admin", "adminko", "adminic", "m", date);
         Korisnik k2 = new Kupac("matija", "m1234", "matija", "matovic", "m", date);
-
+        Korisnik k3 = new Prodavac("prodavko", "p1234", "prodavomir", "prodic", "m", date);
         userDAO.dodajKorisnika(k1);
         userDAO.dodajKorisnika(k2);
+        userDAO.dodajKorisnika(k3);
         userDAO.saveKorisnici();
     }
 }

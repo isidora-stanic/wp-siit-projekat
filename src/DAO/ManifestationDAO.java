@@ -2,6 +2,7 @@ package DAO;
 
 import com.google.gson.Gson;
 import model.Manifestacija;
+import org.opencv.core.Mat;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ManifestationDAO {
     private final ArrayList<Manifestacija> manifestacije = new ArrayList<>();
@@ -48,5 +50,18 @@ public class ManifestationDAO {
         PrintWriter pw = new PrintWriter(new FileWriter("resources/manifestacije.json", false));
         pw.println(g.toJson(this.manifestacije));
         pw.close();
+    }
+
+    public boolean ProveriDostupnost(Manifestacija novaManifestacija) {
+        for (Manifestacija m : this.manifestacije) {
+            long diff_millis = Math.abs(m.getVremeOdrzavanja().getTime() - novaManifestacija.getVremeOdrzavanja().getTime());
+            long diff_in_minutes = TimeUnit.MINUTES.convert(diff_millis, TimeUnit.MILLISECONDS);
+            boolean istoMesto = novaManifestacija.getLokacija().getAdresa().equals(m.getLokacija().getAdresa()); /*&&
+                    novaManifestacija.getLokacija().equals(m.getLokacija()); */
+            if (istoMesto && diff_in_minutes < 30)
+                return false;
+        }
+        //TODO: Zavrsiti dodavanje manifestacija!!!
+        return true;
     }
 }

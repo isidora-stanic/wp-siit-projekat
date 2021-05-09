@@ -37,4 +37,22 @@ public class Adresa {
     public void setPostanskiBroj(String postanskiBroj) {
         this.postanskiBroj = postanskiBroj;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+
+        if (!(obj instanceof  Adresa))
+            return false;
+
+        Adresa other = (Adresa) obj;
+
+        if (other == this)
+            return true;
+
+        return this.ulicaIBroj.trim().toUpperCase().equals(other.getUlicaIBroj().trim().toUpperCase()) &&
+                this.mesto.trim().toUpperCase().equals(other.getMesto().trim().toUpperCase()) &&
+                this.postanskiBroj.trim().toUpperCase().equals(other.getPostanskiBroj().trim().toUpperCase());
+    }
 }

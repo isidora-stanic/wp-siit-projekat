@@ -4,7 +4,7 @@
   "ime" : "adminko",
   "prezime" : "adminic",
   "pol" : "m",
-  "datumRodjenja" : 1620142530328,
+  "datumRodjenja" : 1620485385826,
   "uloga" : "ADMIN",
   "korisnikAktivan" : true
 } ], [ "model.Kupac", {
@@ -13,10 +13,20 @@
   "ime" : "matija",
   "prezime" : "matovic",
   "pol" : "m",
-  "datumRodjenja" : 1620142530328,
+  "datumRodjenja" : 1620485385826,
   "uloga" : "KUPAC",
   "korisnikAktivan" : true,
   "sakupljenihPoena" : 0,
   "tip" : "BRONZE",
   "kupljeneKarte" : [ "java.util.ArrayList", [ ] ]
+} ], [ "model.Prodavac", {
+  "username" : "prodavko",
+  "password" : "p1234",
+  "ime" : "prodavomir",
+  "prezime" : "prodic",
+  "pol" : "m",
+  "datumRodjenja" : 1620485385826,
+  "uloga" : "PRODAVAC",
+  "korisnikAktivan" : true,
+  "manifestacije" : [ "java.util.ArrayList", [ ] ]
 } ] ]
