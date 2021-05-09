@@ -78,5 +78,45 @@
       }
     },
     "slika": "zvonko_bogdan_2019.jpg"
+  },
+  {
+    "ID": "1525766759",
+    "ime": "Manifestacija",
+    "tip": "Manifestic",
+    "ukupnoMesta": 22,
+    "prodatoKarata": 0,
+    "vremeOdrzavanja": "Apr 4, 2021, 6:45:00 PM",
+    "cenaKarte": 222.0,
+    "status": "NEAKTIVNA",
+    "lokacija": {
+      "geografskaSirina": 22.0,
+      "geografskaDuzina": 44.0,
+      "adresa": {
+        "ulicaIBroj": "Trg partizana 27",
+        "mesto": "Uzice",
+        "postanskiBroj": "31000"
+      }
+    },
+    "slika": "Screenshot from 2021-03-28 16-40-31.png"
+  },
+  {
+    "ID": "2136850383",
+    "ime": "Manica",
+    "tip": "Manic",
+    "ukupnoMesta": 22,
+    "prodatoKarata": 0,
+    "vremeOdrzavanja": "May 11, 2021, 8:00:00 PM",
+    "cenaKarte": 222.0,
+    "status": "NEAKTIVNA",
+    "lokacija": {
+      "geografskaSirina": 22.0,
+      "geografskaDuzina": 44.0,
+      "adresa": {
+        "ulicaIBroj": "Trg Partizana 27",
+        "mesto": "Uzice",
+        "postanskiBroj": "27"
+      }
+    },
+    "slika": "Screenshot from 2021-04-13 23-10-54.png"
   }
 ]

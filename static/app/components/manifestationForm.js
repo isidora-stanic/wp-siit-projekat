@@ -4,7 +4,8 @@ Vue.component("manifestation-form", {
             ime: '',
             tip: '',
             ukupnoMesta: 0,
-            vremeOdrzavanja: '',
+            datumMan: '',
+            satnicaMan: '',
             cenaKarte: 0,
             slika: '',
             ulica: '',
@@ -12,6 +13,11 @@ Vue.component("manifestation-form", {
             mesto: '',
             zip: '',
             formError: false
+        }
+    },
+    computed: {
+        vremeOdrzavanja () {
+            return this.datumMan + ' ' + this.satnicaMan
         }
     },
     template: `
@@ -36,9 +42,15 @@ Vue.component("manifestation-form", {
                         <input type="number" min="0" v-model="cenaKarte" class="form-control" id="man-cena" placeholder="Cena karte....">
                     </div>
                     <hr />
-                    <div class="form-group">
-                        <label for="man-datum">Datum održavanja:</label>
-                        <input type="date" v-model="vremeOdrzavanja" class="form-control" id="man-datum" placeholder="Datum održavanja....">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="man-datum">Datum održavanja:</label>
+                            <input type="date" v-model="datumMan" class="form-control" id="man-datum">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="man-vreme">Vreme odrzavanja:</label>
+                            <input type="time" v-model="satnicaMan" class="form-control" id="man-vreme">
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-8">
@@ -77,8 +89,8 @@ Vue.component("manifestation-form", {
     `,
     methods: {
         addManifestation() {
-            if (!(this.ime && this.tip && this.vremeOdrzavanja && this.slika &&
-                    this.ulica && this.broj && this.zip && this.mesto)) {
+            if (!(this.ime && this.tip && this.datumMan && this.satnicaMan
+                && this.slika && this.ulica && this.broj && this.zip && this.mesto)) {
                 this.formError = true
                 return
             }
@@ -91,10 +103,21 @@ Vue.component("manifestation-form", {
                 ulicaIBroj: this.ulica + ' ' + this.broj,
                 mesto: this.mesto,
                 postanskiBroj: this.zip,
-                slika: this.slika
+                slika: this.slika,
+                prodavacID: JSON.parse(localStorage.getItem('user')).username
             }
-            alert('added')
             console.log(manifestacija)
+            axios
+                .post('rest/add/manifestacija', manifestacija)
+                .then(response => {
+                    alert('Успешно додата манифестација')
+                    console.log(response)
+                    this.$router.go('/')
+                })
+                .catch(response => {
+                    alert('Дата локација је заузета у датом термину')
+                    console.log(response)
+                })
         },
         selectImage(event) {
             this.slika = event.target.files[0].name

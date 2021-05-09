@@ -28,5 +28,5 @@
   "datumRodjenja" : 1620485385826,
   "uloga" : "PRODAVAC",
   "korisnikAktivan" : true,
-  "manifestacije" : [ "java.util.ArrayList", [ ] ]
+  "manifestacije" : [ "java.util.ArrayList", [ "1525766759", "2136850383" ] ]
 } ] ]

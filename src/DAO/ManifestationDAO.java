@@ -1,6 +1,7 @@
 package DAO;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Manifestacija;
 import org.opencv.core.Mat;
 
@@ -12,12 +13,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class ManifestationDAO {
     private final ArrayList<Manifestacija> manifestacije = new ArrayList<>();
     private final Map<String, Manifestacija> manifestacijeHashMap = new HashMap<>();
-    private final Gson g = new Gson();
+    private final Gson g = new GsonBuilder().setPrettyPrinting().create();
 
     public ManifestationDAO() {}
 
@@ -63,5 +65,15 @@ public class ManifestationDAO {
         }
         //TODO: Zavrsiti dodavanje manifestacija!!!
         return true;
+    }
+
+    public String generateID() {
+        Random random = new Random(System.currentTimeMillis());
+        while (true) {
+            double rndDouble = random.nextDouble();
+            String generatedID = Double.toString(rndDouble).substring(2, 12);
+            if (!manifestacijeHashMap.containsKey(generatedID))
+                return generatedID;
+        }
     }
 }
