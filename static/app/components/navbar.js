@@ -44,10 +44,15 @@ Vue.component("navbar", {
                                     DODAJ MANIFESTACIJU
                                 </a></li>
                                 <li><a class="nav-link" href="#">PREGLEDAJ MANIFESTACIJU</a></li>
-                                <li><a class="nav-link" href="#">PREGLEDAJ REZERVACIJE</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('cards')">
+                                    PREGLEDAJ REZERVACIJE
+                                </a></li>
                             </template>
                         </ul>
                       </li>
+                    <li v-if="loggedIn" class="nav-item">
+                        <a class="nav-link" href="#" @click.prevent="redirect('userView')">PROFIL</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" @click.prevent="write">Link</a>
                     </li>

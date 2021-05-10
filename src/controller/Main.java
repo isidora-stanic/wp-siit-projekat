@@ -23,8 +23,6 @@ public class Main {
     private static final Gson g = new Gson();
 
     public static void main(String[] args) throws IOException {
-//        dumpUsers();
-
         manifestationDAO.loadManifestacije();
         userDAO.loadKorisnici();
         cardDAO.loadKarte();
@@ -125,12 +123,7 @@ public class Main {
 
         post("/rest/kupovina", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
-            /*kupovina: {
-                tip: 'REGULAR',
-                manifestacijaID: '',
-                kolicina: 0,
-                cena: 0
-            }*/
+
             String tip = userMap.get("tip");
             String manifestacijaID = userMap.get("manifestacijaID");
             String kolicina = userMap.get("kolicina");
@@ -156,21 +149,9 @@ public class Main {
                 k.getKupljeneKarte().add(newID);
             }
 
-//            if (k == null) {
-//                res.status(404);
-//                return null;
-//            }
-//            if (!k.getPassword().equals(password)) {
-//                res.status(404);
-//                return null;
-//            }
             cardDAO.saveKarte();
             manifestationDAO.saveManifestacije();
             userDAO.saveKorisnici();
-
-//            manifestationDAO.loadManifestacije();
-//            userDAO.loadKorisnici();
-//            cardDAO.loadKarte();
 
             return g.toJson(m);
         });
@@ -222,6 +203,35 @@ public class Main {
             userDAO.saveKorisnici();
             return "OK";
         });
+
+        put("/rest/edit/:username", (req, res) -> {
+           HashMap<String, String> newValueMap = g.fromJson(req.body(), HashMap.class);
+           String attribute = newValueMap.get("attribute");
+           String newValue = newValueMap.get("value");
+           String username = req.params(":username");
+           Korisnik k = userDAO.getKorisnikByUsername(username);
+           switch (attribute) {
+               case "ime":
+                   k.setIme(newValue);
+                   break;
+               case "prezime":
+                   k.setPrezime(newValue);
+                   break;
+               case "password":
+                   k.setPassword(newValue);
+                   break;
+               case "datumRodjenja":
+                   Date newDate = new SimpleDateFormat("yyyy-MM-dd").parse(newValue);
+                   k.setDatumRodjenja(newDate);
+                   break;
+               default:
+                   res.status(400);
+                   return "Nepravilan naziv atributa";
+           }
+           userDAO.saveKorisnici();
+           res.status(200);
+           return "OK";
+        });
     }
 
     public static void dumpManifestations() throws IOException {
@@ -229,9 +239,6 @@ public class Main {
         Lokacija lok = new Lokacija(25, 35, adresa);
         Date date = new Date();
 
-        //Manifestacija(
-        // String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja,
-        // Double cenaKarte, Lokacija lokacija)
         Manifestacija m1 = new Manifestacija("1", "M1", "Koncert", 100, new Date(), 1000.00, lok, "zvonko_bogdan_2019.jpg");
         Manifestacija m2 = new Manifestacija("2", "M2", "Koncert", 100, new Date(), 1000.00, lok, "zvonko_bogdan_2019.jpg");
         Manifestacija m3 = new Manifestacija("3", "M3", "Koncert", 100, new Date(), 1000.00, lok, "zvonko_bogdan_2019.jpg");
@@ -246,9 +253,7 @@ public class Main {
         Adresa adresa = new Adresa("Heroja Jerkovica 37", "Uzice", "31000");
         Lokacija lok = new Lokacija(25, 35, adresa);
         Date date = new Date();
-        //Manifestacija(
-        // String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja,
-        // Double cenaKarte, Lokacija lokacija)
+
         Karta k1 = new Karta("10karakter", "1", new Date(), 1000.00, "Kupac 1", Karta.Tip.VIP);
         Karta k2 = new Karta("0karaktera", "2", new Date(), 1000.00, "Kupac 1", Karta.Tip.FAN_PIT);
         Karta k3 = new Karta("karaktera.", "3", new Date(), 1000.00, "Kupac 2", Karta.Tip.REGULAR);

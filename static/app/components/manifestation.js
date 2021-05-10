@@ -56,7 +56,7 @@ Vue.component("manifestation", {
                             </div>
 
                             <div class="form-group">
-                                <button class="btn btn-primary ml-4" style="width: 400%" @click="kupi()">Kupi</button>
+                                <button class="btn btn-primary ml-4" style="width: 250%" @click="kupi()">Kupi</button>
                             </div>
                         </div>
                         <hr/>
