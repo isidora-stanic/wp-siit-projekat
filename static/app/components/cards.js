@@ -251,7 +251,6 @@ Vue.component("cards", {
         otkazi(karta) {
             this.otkazivanje.id = karta.ID;
             this.otkazivanje.username = this.korisnickoIme;
-            alert(karta.ID);
             var date = new Date();
             date.setDate(date.getDate() + 7);
             if (!(Date.parse(karta.datumManifestacije) > date)) {
