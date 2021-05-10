@@ -4,8 +4,8 @@
     "ime": "M1",
     "tip": "Koncert",
     "ukupnoMesta": 100,
-    "prodatoKarata": 0,
-    "vremeOdrzavanja": "Apr 4, 2021, 6:11:52 PM",
+    "prodatoKarata": -1,
+    "vremeOdrzavanja": "Apr 4, 2021, 8:00:00 PM",
     "cenaKarte": 1000.0,
     "status": "NEAKTIVNA",
     "lokacija": {

@@ -18,7 +18,7 @@
   "uloga" : "KUPAC",
   "korisnikAktivan" : true,
   "korisnikBlokiran" : false,
-  "sakupljenihPoena" : -2979,
+  "sakupljenihPoena" : -3511,
   "tip" : "BRONZE",
   "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "8536330690" ] ]
 } ], [ "model.Prodavac", {
@@ -31,5 +31,5 @@
   "uloga" : "PRODAVAC",
   "korisnikAktivan" : true,
   "korisnikBlokiran" : false,
-  "manifestacije" : [ "java.util.ArrayList", [ "1", "2", "1525766759", "2136850383", "4706404678" ] ]
+  "manifestacije" : [ "java.util.ArrayList", [ "1", "2", "1525766759", "2136850383", "4706404678", "3913746507" ] ]
 } ] ]
