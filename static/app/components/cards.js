@@ -154,7 +154,6 @@ Vue.component("cards", {
     `,
     mounted() {
         if (this.korisnik) {
-        alert(JSON.stringify(this.korisnik));
             if (this.korisnickaUloga === 'ADMIN') {
             //rest/manifestacije i rest/karte
                 const manifestacijeReq = axios.get('rest/manifestacije')
@@ -165,9 +164,7 @@ Vue.component("cards", {
                         this.karte = responses[1].data
                         for (let k of this.karte) {
                            for (let m of this.manifestacije) {
-                               console.log(k.manifestacijaID)
-                               if (k.manifestacijaID == m.ID){
-                                   console.log(k.manifestacijaID + '\n-------------')
+                               if (k.manifestacijaID === m.ID){
                                    k['manifestacija'] = m
                                    break
                                }
@@ -181,14 +178,9 @@ Vue.component("cards", {
                      .then(axios.spread((...responses) => {
                         this.manifestacije = responses[0].data
                         this.karte = responses[1].data
-                        console.log('AAAAAAAAAAAAAAAAAAAAAA')
-                        console.log(this.manifestacije)
-                        console.log(this.karte)
                         for (let k of this.karte) {
                            for (let m of this.manifestacije) {
-                               console.log(k.manifestacijaID)
-                               if (k.manifestacijaID == m.ID){
-                                   console.log(k.manifestacijaID + '\n-------------')
+                               if (k.manifestacijaID === m.ID){
                                    k['manifestacija'] = m
                                    break
                                }
