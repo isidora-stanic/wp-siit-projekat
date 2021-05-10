@@ -15,6 +15,10 @@ Vue.component("cards", {
                 datumDo: Date.now(),
                 cenaOd: 0,
                 cenaDo: Number.MAX_SAFE_INTEGER
+            },
+            otkazivanje: {
+                id: '',
+                username: ''
             }
         }
     },
@@ -143,6 +147,7 @@ Vue.component("cards", {
                     <button type="button" class="btn btn-lg btn-primary" @click="posetiManifestaciju(karta.manifestacijaID)">
                         Detalji o manifestaciji
                     </button>
+                    <button v-if="karta.status === 'REZERVISANO' && korisnickaUloga === 'KUPAC'" type="button" class="btn btn-lg btn-danger" @click="otkazi(karta)">Otkaži</button>
                 </div>
             </div>
         </div>
@@ -151,7 +156,7 @@ Vue.component("cards", {
         if (this.korisnik) {
         alert(JSON.stringify(this.korisnik));
             if (this.korisnickaUloga === 'ADMIN') {
-            //rest/mamifestacije i rest/karte
+            //rest/manifestacije i rest/karte
                 const manifestacijeReq = axios.get('rest/manifestacije')
                 const karteReq = axios.get('rest/karte')
                 axios.all([manifestacijeReq, karteReq])
@@ -249,8 +254,30 @@ Vue.component("cards", {
         },
         filtrirajKarte() {
             this.listaKarata = this.listaKarata.filter(x => (x.tip.includes(this.filter.tip) && x.status.includes(this.filter.status)));
-            alert(JSON.stringify(this.listaKarata));
+            //alert(JSON.stringify(this.listaKarata));
         },
+        otkazi(karta) {
+            this.otkazivanje.id = karta.ID;
+            this.otkazivanje.username = this.korisnickoIme;
+            alert(karta.ID);
+            var date = new Date();
+            date.setDate(date.getDate() + 7);
+            if (!(Date.parse(karta.datumManifestacije) > date)) {
+                alert('Kasno za otkazivanje');
+                return;
+            }
+            axios
+                .post('rest/otkazivanje', this.otkazivanje)
+                .then(response => {
+                    console.log(response.data)
+                    this.karte = response.data;
+                    alert('Uspesno otkazivanje karte!');
+                })
+                .catch(response => {
+                    console.log(response.data)
+                    alert('Neuspesno otkazivanje karte, pokusajte ponovo!');
+                })
+        }
     },
     computed: {
         korisnik() {

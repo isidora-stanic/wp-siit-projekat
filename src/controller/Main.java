@@ -123,7 +123,7 @@ public class Main {
 
         post("/rest/kupovina", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
-
+          
             String tip = userMap.get("tip");
             String manifestacijaID = userMap.get("manifestacijaID");
             String kolicina = userMap.get("kolicina");
@@ -144,10 +144,37 @@ public class Main {
             int kolicinaKupljenihKarata = Integer.parseInt(kolicina);
             for (int i = 0; i < kolicinaKupljenihKarata; i++) {
                 String newID = cardDAO.generateID();
-                cardDAO.dodajKartu(new Karta(newID, manifestacijaID, m.getVremeOdrzavanja(), Double.parseDouble(cena), imeKupca, tipKarte));
+                Karta novaKarta = new Karta(newID, manifestacijaID, m.getVremeOdrzavanja(), Double.parseDouble(cena)/kolicinaKupljenihKarata, imeKupca, tipKarte);
+                cardDAO.dodajKartu(novaKarta);
 
                 k.getKupljeneKarte().add(newID);
+                int brojBodova = (int) (novaKarta.getCena()/1000 * 133);
+                k.setSakupljenihPoena(k.getSakupljenihPoena() + brojBodova);
             }
+
+            cardDAO.saveKarte();
+            manifestationDAO.saveManifestacije();
+            userDAO.saveKorisnici();
+
+            return g.toJson(m);
+        });
+
+        post("/rest/otkazivanje", (req, res) -> {
+            HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+            String id = userMap.get("id");
+            String username = userMap.get("username");
+
+            Karta karta = cardDAO.getKartaByID(id);
+            Kupac k = (Kupac) userDAO.getKorisnikByUsername(username);
+
+            Manifestacija m = manifestationDAO.getManifestacijaByID(karta.getManifestacijaID());
+            m.setProdatoKarata(m.getProdatoKarata() - 1);
+
+            int brojIzgubljenihBodova = (int) (karta.getCena()/1000 * 133 * 4);
+
+            karta.setStatus(Karta.Status.OTKAZANO);
+            k.getKupljeneKarte().remove(karta.getID());
+            k.setSakupljenihPoena(k.getSakupljenihPoena() - brojIzgubljenihBodova);
 
             cardDAO.saveKarte();
             manifestationDAO.saveManifestacije();

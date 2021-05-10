@@ -107,10 +107,6 @@ Vue.component("manifestation", {
                         console.log(response.data)
                         this.manifestacija = response.data;
                         alert('Uspesna kupovina karte!');
-
-//                        localStorage.setItem('user', JSON.stringify(response.data))
-//                        this.$router.push('/')
-//                        window.location.reload()
                     })
                     .catch(response => {
                         console.log(response.data)
@@ -121,9 +117,12 @@ Vue.component("manifestation", {
     },
     computed: {
         ukupnaCena() {
-            if (this.kupovina.tip === "REGULAR") return this.kupovina.kolicina * this.manifestacija.cenaKarte;
-            if (this.kupovina.tip === "FAN_PIT") return this.kupovina.kolicina * this.manifestacija.cenaKarte * 2;
-            if (this.kupovina.tip === "VIP") return this.kupovina.kolicina * this.manifestacija.cenaKarte * 4;
+            let popust = 0;
+            if (this.tipKorisnika === "SILVER") popust = 0.03;
+            else if (this.tipKorisnika === "GOLD") popust = 0.05;
+            if (this.kupovina.tip === "REGULAR") return (this.kupovina.kolicina * this.manifestacija.cenaKarte) * (1 - popust);
+            if (this.kupovina.tip === "FAN_PIT") return (this.kupovina.kolicina * this.manifestacija.cenaKarte * 2) * (1 - popust);
+            if (this.kupovina.tip === "VIP") return (this.kupovina.kolicina * this.manifestacija.cenaKarte * 4) * (1 - popust);
             return 0;
         },
         korisnik() {
@@ -137,6 +136,9 @@ Vue.component("manifestation", {
         },
         imeKorisnika() {
             return this.korisnik.ime + " " + this.korisnik.prezime;
+        },
+        tipKorisnika() {
+            return this.korisnik.tip;
         }
     }
 })

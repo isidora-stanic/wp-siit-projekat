@@ -16,9 +16,9 @@
   "datumRodjenja" : 1620485385826,
   "uloga" : "KUPAC",
   "korisnikAktivan" : true,
-  "sakupljenihPoena" : 0,
+  "sakupljenihPoena" : -2979,
   "tip" : "BRONZE",
-  "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "5577032237" ] ]
+  "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "8536330690" ] ]
 } ], [ "model.Prodavac", {
   "username" : "prodavko",
   "password" : "p1234",
