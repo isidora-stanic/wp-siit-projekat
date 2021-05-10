@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Manifestacija {
     private String ID;
@@ -110,5 +111,20 @@ public class Manifestacija {
 
     public void setSlika(String slika) {
         this.slika = slika;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Manifestacija that = (Manifestacija) o;
+
+        return ID.equals(that.ID);
+    }
+
+    @Override
+    public int hashCode() {
+        return ID != null ? ID.hashCode() : 0;
     }
 }

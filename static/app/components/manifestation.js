@@ -66,6 +66,10 @@ Vue.component("manifestation", {
 
                     </div>
                 </div>
+                <button class="btn btn-lg btn-light d-flex float-right"
+                    v-if="prodavacPostavio" @click="editRedirect">
+                    Izmeni
+                </button>
                 <div id="komentari">
                     <div class="jumbotron" v-for="k in komentari" :key="k">
                         </hr>
@@ -113,6 +117,10 @@ Vue.component("manifestation", {
                         alert('Neuspesna kupovina karte, pokusajte ponovo!');
                     })
             }
+        },
+        editRedirect() {
+            let path = '/edit/manifestation/' + this.$route.params.id
+            this.$router.push(path)
         }
     },
     computed: {
@@ -139,6 +147,13 @@ Vue.component("manifestation", {
         },
         tipKorisnika() {
             return this.korisnik.tip;
-        }
+        },
+        prodavacPostavio() {
+            if (this.korisnickaUloga === 'PRODAVAC') {
+                if (this.korisnik.manifestacijeIDs.includes(this.$route.params.id))
+                    return true
+            }
+            return false
+        },
     }
 })

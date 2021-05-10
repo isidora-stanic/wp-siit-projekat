@@ -56,6 +56,8 @@ public class ManifestationDAO {
 
     public boolean ProveriDostupnost(Manifestacija novaManifestacija) {
         for (Manifestacija m : this.manifestacije) {
+            if (m.getID().equals(novaManifestacija.getID())) /* Ako izmenjujemo manifestaciju */
+                continue;
             long diff_millis = Math.abs(m.getVremeOdrzavanja().getTime() - novaManifestacija.getVremeOdrzavanja().getTime());
             long diff_in_minutes = TimeUnit.MINUTES.convert(diff_millis, TimeUnit.MILLISECONDS);
             boolean istoMesto = novaManifestacija.getLokacija().getAdresa().equals(m.getLokacija().getAdresa()); /*&&

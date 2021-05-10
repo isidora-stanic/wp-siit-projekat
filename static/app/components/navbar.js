@@ -86,7 +86,7 @@ Vue.component("navbar", {
         logOut() {
             localStorage.removeItem('user')
             this.loggedIn = false
-            this.$router.go() //Ne mora ali lepse izgleda kad se refresh-uje
+            this.$router.push('/') //Ne mora ali lepse izgleda kad se refresh-uje
         },
         write() {
             alert(this.loggedIn)

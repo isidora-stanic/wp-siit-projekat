@@ -134,7 +134,7 @@ Vue.component("cards", {
                 <hr />
 
                 <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px"
-                 v-for="karta in karte"
+                 v-for="karta in filtriraneKarte"
                  :key="karta.ID">
                     <h3>{{karta.manifestacija.ime}}</h3>
                     <h4>Kupac: {{karta.imeKupca}}</h4>
@@ -154,7 +154,6 @@ Vue.component("cards", {
     `,
     mounted() {
         if (this.korisnik) {
-        alert(JSON.stringify(this.korisnik));
             if (this.korisnickaUloga === 'ADMIN') {
             //rest/manifestacije i rest/karte
                 const manifestacijeReq = axios.get('rest/manifestacije')
@@ -165,9 +164,7 @@ Vue.component("cards", {
                         this.karte = responses[1].data
                         for (let k of this.karte) {
                            for (let m of this.manifestacije) {
-                               console.log(k.manifestacijaID)
-                               if (k.manifestacijaID == m.ID){
-                                   console.log(k.manifestacijaID + '\n-------------')
+                               if (k.manifestacijaID === m.ID){
                                    k['manifestacija'] = m
                                    break
                                }
@@ -181,14 +178,9 @@ Vue.component("cards", {
                      .then(axios.spread((...responses) => {
                         this.manifestacije = responses[0].data
                         this.karte = responses[1].data
-                        console.log('AAAAAAAAAAAAAAAAAAAAAA')
-                        console.log(this.manifestacije)
-                        console.log(this.karte)
                         for (let k of this.karte) {
                            for (let m of this.manifestacije) {
-                               console.log(k.manifestacijaID)
-                               if (k.manifestacijaID == m.ID){
-                                   console.log(k.manifestacijaID + '\n-------------')
+                               if (k.manifestacijaID === m.ID){
                                    k['manifestacija'] = m
                                    break
                                }
@@ -259,7 +251,6 @@ Vue.component("cards", {
         otkazi(karta) {
             this.otkazivanje.id = karta.ID;
             this.otkazivanje.username = this.korisnickoIme;
-            alert(karta.ID);
             var date = new Date();
             date.setDate(date.getDate() + 7);
             if (!(Date.parse(karta.datumManifestacije) > date)) {
@@ -272,6 +263,7 @@ Vue.component("cards", {
                     console.log(response.data)
                     this.karte = response.data;
                     alert('Uspesno otkazivanje karte!');
+                    this.$router.go()
                 })
                 .catch(response => {
                     console.log(response.data)
@@ -288,6 +280,12 @@ Vue.component("cards", {
         },
         korisnickoIme() {
             return this.korisnik.username;
+        },
+        filtriraneKarte() {
+            if (this.korisnik.uloga !== 'ADMIN')
+                return this.karte.filter(karta => karta.status === 'REZERVISANO')
+            else
+                return this.karte
         }
     }
 })

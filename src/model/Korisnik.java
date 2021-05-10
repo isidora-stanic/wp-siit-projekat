@@ -12,19 +12,21 @@ public abstract class Korisnik {
     public enum Uloga { ADMIN, KUPAC, PRODAVAC }
     protected Uloga uloga;
     protected boolean korisnikAktivan;
+    protected boolean korisnikBlokiran;
 
     public Korisnik() {
         this.korisnikAktivan = true;
+        this.korisnikBlokiran = false;
     }
 
     public Korisnik(String username, String password, String ime, String prezime, String pol, Date datumRodjenja) {
+        this();
         this.username = username;
         this.password = password;
         this.ime = ime;
         this.prezime = prezime;
         this.pol = pol;
         this.datumRodjenja = datumRodjenja;
-        this.korisnikAktivan = true;
     }
 
     public String getUsername() {
@@ -89,5 +91,13 @@ public abstract class Korisnik {
 
     public void setKorisnikAktivan(boolean korisnikAktivan) {
         this.korisnikAktivan = korisnikAktivan;
+    }
+
+    public boolean isKorisnikBlokiran() {
+        return korisnikBlokiran;
+    }
+
+    public void setKorisnikBlokiran(boolean korisnikBlokiran) {
+        this.korisnikBlokiran = korisnikBlokiran;
     }
 }

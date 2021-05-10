@@ -43,6 +43,10 @@ public class Main {
                 return "Manifestation with given ID not found";
             }
 
+            //TODO: Dodati da vraca null i ako je m.obrisana() == ture
+            //TODO: Dodati da vraca null i ako je status == 'ODBIJENA'
+            //TODO: DODATI POLJE boolean obrisana U MANIFESTACIJU
+
             res.type("application/json");
             return g.toJson(m);
         });
@@ -117,7 +121,10 @@ public class Main {
                 res.status(400);
                 return null;
             }
-
+            if (k.isKorisnikBlokiran() || !k.isKorisnikAktivan()) {
+                res.status(400);
+                return null;
+            }
             return g.toJson(k);
         });
 
@@ -173,7 +180,7 @@ public class Main {
             int brojIzgubljenihBodova = (int) (karta.getCena()/1000 * 133 * 4);
 
             karta.setStatus(Karta.Status.OTKAZANO);
-            k.getKupljeneKarte().remove(karta.getID());
+            //k.getKupljeneKarte().remove(karta.getID());
             k.setSakupljenihPoena(k.getSakupljenihPoena() - brojIzgubljenihBodova);
 
             cardDAO.saveKarte();
@@ -228,6 +235,50 @@ public class Main {
             manifestationDAO.dodajManifestaciju(man);
             manifestationDAO.saveManifestacije();
             userDAO.saveKorisnici();
+            return "OK";
+        });
+
+        put("/rest/edit/manifestacija", (req, res) -> {
+            HashMap<String, String> manifestationMap = g.fromJson(req.body(), HashMap.class);
+            String id = manifestationMap.get("id");
+
+            String ime = manifestationMap.get("ime");
+            String tip = manifestationMap.get("tip");
+            int ukupnoMesta = Integer.parseInt(manifestationMap.get("ukupnoMesta"));
+            double cenaKarte = Double.parseDouble(manifestationMap.get("cenaKarte"));
+            String ulicaIBroj = manifestationMap.get("ulicaIBroj");
+            String mesto = manifestationMap.get("mesto");
+            String postanskiBroj = manifestationMap.get("postanskiBroj");
+            String slika = manifestationMap.get("slika");
+
+            String vremeOdrzavanjaString = manifestationMap.get("vremeOdrzavanja");
+            Date vremeOdrzavanja = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(vremeOdrzavanjaString);
+
+            Manifestacija man = manifestationDAO.getManifestacijaByID(id);
+
+            man.setIme(ime);
+            man.setTip(tip);
+            man.setUkupnoMesta(ukupnoMesta);
+            man.setCenaKarte(cenaKarte);
+            man.setVremeOdrzavanja(vremeOdrzavanja);
+
+            man.getLokacija().getAdresa().setUlicaIBroj(ulicaIBroj);
+            man.getLokacija().getAdresa().setMesto(mesto);
+            man.getLokacija().getAdresa().setPostanskiBroj(postanskiBroj);
+
+            if (!manifestationDAO.ProveriDostupnost(man)) {
+                res.status(400);
+                return "Lokacija nije slobodna u dato vreme";
+            }
+
+            for (Karta k : cardDAO.getKarte()) {
+                if (k.getManifestacijaID().equals(man.getID())) {
+                    k.setDatumManifestacije(man.getVremeOdrzavanja());
+                }
+            }
+
+            manifestationDAO.saveManifestacije();
+            cardDAO.saveKarte();
             return "OK";
         });
 
