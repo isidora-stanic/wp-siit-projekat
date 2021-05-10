@@ -117,7 +117,10 @@ public class Main {
                 res.status(400);
                 return null;
             }
-
+            if (k.isKorisnikBlokiran() || !k.isKorisnikAktivan()) {
+                res.status(400);
+                return null;
+            }
             return g.toJson(k);
         });
 

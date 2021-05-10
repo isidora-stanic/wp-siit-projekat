@@ -1,7 +1,7 @@
 Vue.component("cards", {
     data: function() {
         return {
-            karte: [],
+            sveKarte: [],   //BILO KARTE
             manifestacije: [],
             pretrazeneKarte: [],
             listaKarata: [],
@@ -272,6 +272,7 @@ Vue.component("cards", {
                     console.log(response.data)
                     this.karte = response.data;
                     alert('Uspesno otkazivanje karte!');
+                    this.$router.go()
                 })
                 .catch(response => {
                     console.log(response.data)
@@ -288,6 +289,12 @@ Vue.component("cards", {
         },
         korisnickoIme() {
             return this.korisnik.username;
+        },
+        karte() {
+            if (this.korisnik.uloga !== 'ADMIN')
+                return this.sveKarte.filter(karta => karta.status === 'REZERVISANO')
+            else
+                return this.sveKarte
         }
     }
 })
