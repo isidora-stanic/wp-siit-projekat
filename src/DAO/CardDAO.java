@@ -1,6 +1,7 @@
 package DAO;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Karta;
 
 import java.io.FileWriter;
@@ -13,7 +14,7 @@ import java.util.*;
 public class CardDAO {
     private final ArrayList<Karta> karte = new ArrayList<>();
     private final Map<String, Karta> karteHashMap = new HashMap<>();
-    private final Gson g = new Gson();
+    private final Gson g = new GsonBuilder().setPrettyPrinting().create();
 
     public CardDAO() {}
 

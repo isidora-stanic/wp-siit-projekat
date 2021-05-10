@@ -1,7 +1,7 @@
 Vue.component("cards", {
     data: function() {
         return {
-            sveKarte: [],   //BILO KARTE
+            karte: [],
             manifestacije: [],
             pretrazeneKarte: [],
             listaKarata: [],
@@ -134,7 +134,7 @@ Vue.component("cards", {
                 <hr />
 
                 <div class="jumbotron" style="padding-top: 15px; padding-bottom: 15px"
-                 v-for="karta in karte"
+                 v-for="karta in filtriraneKarte"
                  :key="karta.ID">
                     <h3>{{karta.manifestacija.ime}}</h3>
                     <h4>Kupac: {{karta.imeKupca}}</h4>
@@ -290,11 +290,11 @@ Vue.component("cards", {
         korisnickoIme() {
             return this.korisnik.username;
         },
-        karte() {
+        filtriraneKarte() {
             if (this.korisnik.uloga !== 'ADMIN')
-                return this.sveKarte.filter(karta => karta.status === 'REZERVISANO')
+                return this.karte.filter(karta => karta.status === 'REZERVISANO')
             else
-                return this.sveKarte
+                return this.karte
         }
     }
 })
