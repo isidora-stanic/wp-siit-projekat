@@ -176,7 +176,7 @@ public class Main {
             int brojIzgubljenihBodova = (int) (karta.getCena()/1000 * 133 * 4);
 
             karta.setStatus(Karta.Status.OTKAZANO);
-            k.getKupljeneKarte().remove(karta.getID());
+            //k.getKupljeneKarte().remove(karta.getID());
             k.setSakupljenihPoena(k.getSakupljenihPoena() - brojIzgubljenihBodova);
 
             cardDAO.saveKarte();
