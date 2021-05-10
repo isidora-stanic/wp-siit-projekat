@@ -43,7 +43,9 @@ Vue.component("navbar", {
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('add/manifestation')">
                                     DODAJ MANIFESTACIJU
                                 </a></li>
-                                <li><a class="nav-link" href="#">PREGLEDAJ MANIFESTACIJU</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('seller/manifestations')">
+                                    PREGLEDAJ MANIFESTACIJE
+                                </a></li>
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('cards')">
                                     PREGLEDAJ REZERVACIJE
                                 </a></li>
