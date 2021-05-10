@@ -271,7 +271,14 @@ public class Main {
                 return "Lokacija nije slobodna u dato vreme";
             }
 
+            for (Karta k : cardDAO.getKarte()) {
+                if (k.getManifestacijaID().equals(man.getID())) {
+                    k.setDatumManifestacije(man.getVremeOdrzavanja());
+                }
+            }
+
             manifestationDAO.saveManifestacije();
+            cardDAO.saveKarte();
             return "OK";
         });
 
