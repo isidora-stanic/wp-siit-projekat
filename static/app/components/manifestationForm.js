@@ -112,7 +112,7 @@ Vue.component("manifestation-form", {
                 .then(response => {
                     alert('Успешно додата манифестација')
                     console.log(response)
-                    this.$router.go('/')
+                    this.$router.push('/')
                 })
                 .catch(response => {
                     alert('Дата локација је заузета у датом термину')

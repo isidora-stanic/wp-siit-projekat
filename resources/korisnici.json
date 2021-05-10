@@ -22,11 +22,11 @@
 } ], [ "model.Prodavac", {
   "username" : "prodavko",
   "password" : "p1234",
-  "ime" : "prodavomir",
-  "prezime" : "prodic",
+  "ime" : "Prodavomir",
+  "prezime" : "prodić",
   "pol" : "m",
-  "datumRodjenja" : 1620485385826,
+  "datumRodjenja" : 1435442400000,
   "uloga" : "PRODAVAC",
   "korisnikAktivan" : true,
-  "manifestacije" : [ "java.util.ArrayList", [ "1525766759", "2136850383" ] ]
+  "manifestacije" : [ "java.util.ArrayList", [ "1525766759", "2136850383", "4706404678" ] ]
 } ] ]
