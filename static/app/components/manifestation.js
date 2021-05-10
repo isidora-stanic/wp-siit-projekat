@@ -70,6 +70,10 @@ Vue.component("manifestation", {
                     v-if="prodavacPostavio" @click="editRedirect">
                     Izmeni
                 </button>
+                <button class="btn btn-lg btn-primary d-flex float-right"
+                    v-if="prodavacPostavio" @click="viewBuyers">
+                    Kupci
+                </button>
                 <div id="komentari">
                     <div class="jumbotron" v-for="k in komentari" :key="k">
                         </hr>
@@ -120,6 +124,10 @@ Vue.component("manifestation", {
         },
         editRedirect() {
             let path = '/edit/manifestation/' + this.$route.params.id
+            this.$router.push(path)
+        },
+        viewBuyers() {
+            let path = '/buyers/manifestation/' + this.$route.params.id
             this.$router.push(path)
         }
     },

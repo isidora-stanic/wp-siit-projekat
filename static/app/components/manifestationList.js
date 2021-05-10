@@ -114,9 +114,11 @@ Vue.component("manifestation-list", {
         </div>
     `,
     mounted() {
-        let sellerID = JSON.parse(localStorage.getItem('user')).username
-        let path = this.context === 'ORGANIZER' ?
-            'rest/manifestacije-prodavca/' + sellerID : 'rest/manifestacije'
+        let path = 'rest/manifestacije'
+        if (this.context === 'ORGANIZER') {
+            let sellerID = JSON.parse(localStorage.getItem('user')).username
+            path = 'rest/manifestacije-prodavca/' + sellerID
+        }
         axios
             .get(path)
             .then(response => {
@@ -140,8 +142,8 @@ Vue.component("manifestation-list", {
                     if (Date.parse(a.vremeOdrzavanja) > Date.parse(b.vremeOdrzavanja)) return 1;
                     return 0;
                 } else if (kriterijum === "lokacija"){
-                    aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
-                    bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
+                    let aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
+                    let bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
                     return aAddress.localeCompare(bAddress);
                 }
                 return 0;

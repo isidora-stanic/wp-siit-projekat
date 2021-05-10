@@ -7,6 +7,7 @@ const manifestation = {template: '<manifestation></manifestation>'}
 const manifestationForm = {template: '<manifestation-form></manifestation-form>'}
 const manifestationEdit = {template: '<manifestation-edit></manifestation-edit>'}
 const sellerManifestations = {template: '<seller-manifestations></seller-manifestations>'}
+const manifestationBuyers = {template: '<manifestation-buyers></manifestation-buyers>'}
 const cards = {template: '<cards></cards>'}
 
 const router = new VueRouter({
@@ -21,6 +22,7 @@ const router = new VueRouter({
         {path: '/manifestation/:id', component: manifestation},
         {path: '/add/manifestation', component: manifestationForm},
         {path: '/edit/manifestation/:id', component: manifestationEdit},
+        {path: '/buyers/manifestation/:id', component: manifestationBuyers},
         {path: '/seller/manifestations', component: sellerManifestations},
         {path: '/cards', component: cards},
     ]

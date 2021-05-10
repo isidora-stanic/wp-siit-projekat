@@ -93,6 +93,28 @@ public class Main {
             return g.toJson(karte);
         });
 
+        get("/rest/kupci/:manifestacijaID", (req, res) -> {
+            Manifestacija man = manifestationDAO.getManifestacijaByID(req.params(":manifestacijaID"));
+            ArrayList<Kupac> kupciKarata = new ArrayList<>();
+            for (Korisnik u : userDAO.getKorisnici()) {
+                if (u.getUloga() == Korisnik.Uloga.KUPAC) {
+                    Kupac kupac = (Kupac) u;
+                    if (kupac.isKorisnikBlokiran() || !kupac.isKorisnikAktivan())
+                        continue;
+                    for (String kartaID : kupac.getKupljeneKarte()) {
+                        Karta karta = cardDAO.getKartaByID(kartaID);
+                        if (!karta.isObrisan() && karta.getStatus() == Karta.Status.REZERVISANO &&
+                                karta.getManifestacijaID().equals(man.getID())) {
+                            if (!kupciKarata.contains(kupac))
+                                kupciKarata.add(kupac);
+                        }
+                    }
+                }
+            }
+            res.type("application/json");
+            return g.toJson(kupciKarata);
+        });
+
         post("/rest/register", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
 

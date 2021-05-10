@@ -100,4 +100,19 @@ public abstract class Korisnik {
     public void setKorisnikBlokiran(boolean korisnikBlokiran) {
         this.korisnikBlokiran = korisnikBlokiran;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Korisnik korisnik = (Korisnik) o;
+
+        return username.equals(korisnik.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
+    }
 }
