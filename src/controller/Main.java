@@ -35,6 +35,16 @@ public class Main {
            return g.toJson(manifestationDAO.getManifestacije());
         });
 
+        get("/rest/manifestacije-prodavca/:username", (req, res) -> {
+           Prodavac prodavac = (Prodavac) userDAO.getKorisnikByUsername(req.params(":username"));
+           ArrayList<Manifestacija> manifestacije = new ArrayList<>();
+           for (String manifestacijaID : prodavac.getManifestacije()) {
+               manifestacije.add(manifestationDAO.getManifestacijaByID(manifestacijaID));
+           }
+           res.type("application/json");
+           return g.toJson(manifestacije);
+        });
+
         get("/rest/manifestacija/:id", (req, res) -> {
             Manifestacija m = manifestationDAO.getManifestacijaByID(req.params(":id"));
 

@@ -31,5 +31,5 @@
   "uloga" : "PRODAVAC",
   "korisnikAktivan" : true,
   "korisnikBlokiran" : false,
-  "manifestacije" : [ "java.util.ArrayList", [ "1", "2", "1525766759", "2136850383", "4706404678", "3913746507" ] ]
+  "manifestacije" : [ "java.util.ArrayList", [ "1", "2" ] ]
 } ] ]
