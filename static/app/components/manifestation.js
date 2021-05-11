@@ -10,6 +10,8 @@ Vue.component("manifestation", {
             },
 //            uzetoKarata: null,
             komentari: [],
+            komentarTekst: '',
+            komentarOcena: '',
             kupovina: {
                 tip: 'REGULAR',
                 manifestacijaID: '',
@@ -74,11 +76,44 @@ Vue.component("manifestation", {
                     v-if="prodavacPostavio" @click="viewBuyers">
                     Kupci
                 </button>
-                <div id="komentari">
-                    <div class="jumbotron" v-for="k in komentari" :key="k">
-                        </hr>
-                        <h5>{{k.korisnik}} {{k.ocena}}</h5>
+                <br /><br /><br />
+                <hr />
+                <div id="komentari row h-100 justify-content-center align-items-center">
+                    <div v-if="korisnickaUloga === 'KUPAC'" class="comment-box">
+                        <form>
+                            <h4>Komentar:</h4>
+                            <div class="form-row">
+                                <div class="form-group col-md-9">
+                                    <input type="text" class="form-control" placeholder="Unesite komentar..."
+                                        v-model="komentarTekst">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <select class="form-control" v-model="komentarOcena">
+                                        <option selected disabled value="">Ocena</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="postComment">Objavi</button>
+                        </form>
+                        <hr />
+                    </div>
+                    <h4>Komentari: </h4>
+                    <hr />
+                    <div v-for="k in komentariZaPrikaz" :key="k.ID" style="margin: 15px;">
+                        <h5>{{k.korisnik}}</h5>
+                        <h6>Ocena: {{k.ocena}}</h6>
                         <h6>{{k.tekst}}</h6>
+                        <template v-if="prodavacPostavio && !k.prihvacenoOdProdavca">
+                            <button class="btn btn-primary btn-sm" @click="acceptComment(k.ID)">
+                                Prihvati
+                            </button>
+                        </template>
+                        <hr />
                     </div>
                 </div>
             </div>
@@ -88,14 +123,23 @@ Vue.component("manifestation", {
         this.kupovina.manifestacijaID = this.$route.params.id;
         this.kupovina.username = this.korisnickoIme;
         this.kupovina.imeKupca = this.imeKorisnika;
+
+        let manifestationPath = 'rest/manifestacija/' + this.$route.params.id
+        let commentsPath = 'rest/comments/' + this.$route.params.id
+
+        let manifestationRequest = axios.get(manifestationPath)
+        let commentsRequest = axios.get(commentsPath)
+
         axios
-            .get("rest/manifestacija/" + this.$route.params.id)
-            .then(response => {
-                if (response.data)
-                    this.manifestacija = response.data
-                else
-                    alert('Ne postoji tražena manifestacija');
-            });
+            .all([manifestationRequest, commentsRequest])
+            .then(axios.spread((...responses) => {
+                this.manifestacija = responses[0].data
+                this.komentari = responses[1].data
+            }))
+            .catch(errors => {
+                console.log(errors)
+                alert('Došlo je do greške')
+            })
     },
     methods: {
         kupi() {
@@ -129,10 +173,46 @@ Vue.component("manifestation", {
         viewBuyers() {
             let path = '/buyers/manifestation/' + this.$route.params.id
             this.$router.push(path)
+        },
+        postComment() {
+            let path = 'rest/comment/post'
+            let komentar = {
+                manifestacijaID: this.$route.params.id,
+                username: this.korisnickoIme,
+                tekst: this.komentarTekst,
+                ocena: this.komentarOcena,
+            }
+            console.log(path)
+            console.log(komentar)
+            axios
+                .post(path, komentar)
+                .then(response => {
+                    alert('Uspešno objavljen komentar')
+                    console.log(response)
+                })
+                .catch(error => {
+                    alert(error.response.data)
+                    console.log(error)
+                })
+        },
+        acceptComment(commentID) {
+            let path = '/rest/comment/accept'
+            axios
+                .put(path, {commentID: commentID})
+                .then(response => {
+                    console.log(response)
+                    this.$router.go()
+                })
+                .catch(error => {
+                    alert(error.response.data)
+                })
         }
     },
     computed: {
         ukupnaCena() {
+            if (!this.korisnik || this.korisnickaUloga !== 'KUPAC')
+                return 0
+
             let popust = 0;
             if (this.tipKorisnika === "SILVER") popust = 0.03;
             else if (this.tipKorisnika === "GOLD") popust = 0.05;
@@ -145,23 +225,39 @@ Vue.component("manifestation", {
             return JSON.parse(localStorage.getItem('user'));
         },
         korisnickaUloga() {
+            if (!this.korisnik)
+                return 'NONE'
             return this.korisnik.uloga;
         },
         korisnickoIme() {
+            if (!this.korisnik)
+                return 'NONE'
             return this.korisnik.username;
         },
         imeKorisnika() {
+            if (!this.korisnik)
+                return 'NONE'
             return this.korisnik.ime + " " + this.korisnik.prezime;
         },
         tipKorisnika() {
+            if (!this.korisnik)
+                return 'NONE'
             return this.korisnik.tip;
         },
         prodavacPostavio() {
+            if (!this.korisnik)
+                return false
+
             if (this.korisnickaUloga === 'PRODAVAC') {
                 if (this.korisnik.manifestacijeIDs.includes(this.$route.params.id))
                     return true
             }
             return false
         },
+        komentariZaPrikaz() {
+            if (['NONE', 'KUPAC'].includes(this.korisnickaUloga))
+                return this.komentari.filter(komentar => komentar.prihvacenoOdProdavca)
+            return this.komentari
+        }
     }
 })

@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.CardDAO;
+import DAO.CommentDAO;
 import DAO.ManifestationDAO;
 import DAO.UserDAO;
 import com.google.gson.Gson;
@@ -20,15 +21,22 @@ public class Main {
     private static final ManifestationDAO manifestationDAO = new ManifestationDAO();
     private static final CardDAO cardDAO = new CardDAO();
     private static final UserDAO userDAO = new UserDAO();
+    private static final CommentDAO commentDAO = new CommentDAO();
     private static final Gson g = new Gson();
 
     public static void main(String[] args) throws IOException {
         manifestationDAO.loadManifestacije();
         userDAO.loadKorisnici();
         cardDAO.loadKarte();
+        commentDAO.loadKomentari();
 
         staticFiles.externalLocation(new File("./static").getCanonicalPath());
         port(8080);
+
+        /* GET METODE */
+        /* =========================================================================== */
+        /* =========================================================================== */
+        /* =========================================================================== */
 
         get("/rest/manifestacije", (req, res) -> {
            res.type("application/json");
@@ -114,6 +122,17 @@ public class Main {
             res.type("application/json");
             return g.toJson(kupciKarata);
         });
+
+        get("/rest/comments/:manifestationID", (req, res) -> {
+           res.type("application/json");
+           String manifestationID = req.params(":manifestationID");
+           return g.toJson(commentDAO.getKomentariByManifestacija(manifestationID));
+        });
+
+        /* POST METODE */
+        /* =========================================================================== */
+        /* =========================================================================== */
+        /* =========================================================================== */
 
         post("/rest/register", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
@@ -270,6 +289,55 @@ public class Main {
             return "OK";
         });
 
+        post("/rest/comment/post", (req, res) -> {
+            HashMap<String, String> commentMap = g.fromJson(req.body(), HashMap.class);
+
+            String manifestacijaID = commentMap.get("manifestacijaID");
+            Manifestacija man = manifestationDAO.getManifestacijaByID(manifestacijaID);
+            if (man.getVremeOdrzavanja().after(new Date())) {
+                res.status(400);
+                return "Manifestacija još nije završena";
+            }
+
+            String kupacUsername = commentMap.get("username");
+            Kupac k = (Kupac) userDAO.getKorisnikByUsername(kupacUsername);
+            boolean imaRezervaciju = false;
+            for (String kartaID : k.getKupljeneKarte()) {
+                Karta karta = cardDAO.getKartaByID(kartaID);
+                if (karta.getManifestacijaID().equals(man.getID())) {
+                    if (!karta.isObrisan() && karta.getStatus() == Karta.Status.REZERVISANO)
+                        imaRezervaciju = true;
+                }
+            }
+            if (!imaRezervaciju) {
+                res.status(400);
+                return "Nemate rezervisanu kartu za ovu manifestaciju";
+            }
+
+            String tekstKomentara = commentMap.get("tekst");
+            int ocena = Integer.parseInt(commentMap.get("ocena"));
+
+            Komentar komentar = new Komentar(
+                    commentDAO.generateID(),
+                    kupacUsername,
+                    manifestacijaID,
+                    tekstKomentara,
+                    ocena
+            );
+
+            commentDAO.dodajKomentar(komentar);
+            commentDAO.saveKomentari();
+            res.status(200);
+            return "OK";
+        });
+
+
+
+        /* PUT METODE */
+        /* =========================================================================== */
+        /* =========================================================================== */
+        /* =========================================================================== */
+
         put("/rest/edit/manifestacija", (req, res) -> {
             HashMap<String, String> manifestationMap = g.fromJson(req.body(), HashMap.class);
             String id = manifestationMap.get("id");
@@ -341,6 +409,15 @@ public class Main {
            userDAO.saveKorisnici();
            res.status(200);
            return "OK";
+        });
+
+        put("rest/comment/accept", (req, res) -> {
+            HashMap<String, String> commentMap = g.fromJson(req.body(), HashMap.class);
+            String commentID = commentMap.get("commentID");
+            Komentar komentar = commentDAO.getKomentarByID(commentID);
+            komentar.setPrihvacenoOdProdavca(true);
+            commentDAO.saveKomentari();
+            return "OK";
         });
     }
 
