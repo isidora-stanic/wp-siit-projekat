@@ -27,7 +27,7 @@ Vue.component("manifestation", {
             <div class="container">
                 <div class="page-header">
                     <h1>{{manifestacija.ime}}</h1>
-                    <h2>TODO: *****</h2>
+                    <h2 v-if="Date.parse(manifestacija.vremeOdrzavanja) < new Date">Ocena: {{ocena}}</h2>
                 </div>
                 <div class="row">
                     <img class="col-lg-4" v-bind:src="'../images/' + manifestacija.slika">
@@ -258,6 +258,17 @@ Vue.component("manifestation", {
             if (['NONE', 'KUPAC'].includes(this.korisnickaUloga))
                 return this.komentari.filter(komentar => komentar.prihvacenoOdProdavca)
             return this.komentari
+        },
+        ocena() {
+            let validniKomentari = this.komentari
+                                    .filter(komentar => komentar.prihvacenoOdProdavca)
+            let sumaOcena = 0
+            let brojOcena = 0
+            for (let ocenaKomentar of validniKomentari) {
+                sumaOcena += ocenaKomentar.ocena
+                brojOcena += 1
+            }
+            return brojOcena === 0 ? sumaOcena : sumaOcena / brojOcena
         }
     }
 })
