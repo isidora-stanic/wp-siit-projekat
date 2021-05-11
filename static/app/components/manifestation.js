@@ -104,12 +104,14 @@ Vue.component("manifestation", {
                     </div>
                     <h4>Komentari: </h4>
                     <hr />
-                    <div v-for="k in komentariZaPrikaz" :key="k.username" style="margin: 15px;">
+                    <div v-for="k in komentariZaPrikaz" :key="k.ID" style="margin: 15px;">
                         <h5>{{k.korisnik}}</h5>
                         <h6>Ocena: {{k.ocena}}</h6>
                         <h6>{{k.tekst}}</h6>
                         <template v-if="prodavacPostavio && !k.prihvacenoOdProdavca">
-                            <button class="btn btn-primary btn-sm">Prihvati</button>
+                            <button class="btn btn-primary btn-sm" @click="acceptComment(k.ID)">
+                                Prihvati
+                            </button>
                         </template>
                         <hr />
                     </div>
@@ -193,8 +195,17 @@ Vue.component("manifestation", {
                     console.log(error)
                 })
         },
-        acceptComment() {
-
+        acceptComment(commentID) {
+            let path = '/rest/comment/accept'
+            axios
+                .put(path, {commentID: commentID})
+                .then(response => {
+                    console.log(response)
+                    this.$router.go()
+                })
+                .catch(error => {
+                    alert(error.response.data)
+                })
         }
     },
     computed: {

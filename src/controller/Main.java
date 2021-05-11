@@ -410,6 +410,15 @@ public class Main {
            res.status(200);
            return "OK";
         });
+
+        put("rest/comment/accept", (req, res) -> {
+            HashMap<String, String> commentMap = g.fromJson(req.body(), HashMap.class);
+            String commentID = commentMap.get("commentID");
+            Komentar komentar = commentDAO.getKomentarByID(commentID);
+            komentar.setPrihvacenoOdProdavca(true);
+            commentDAO.saveKomentari();
+            return "OK";
+        });
     }
 
     public static void dumpManifestations() throws IOException {

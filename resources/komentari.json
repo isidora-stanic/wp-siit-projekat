@@ -3,7 +3,7 @@
     "ID": "4868220569",
     "korisnik": "matija",
     "manifestacijaID": "1",
-    "prihvacenoOdProdavca": false,
+    "prihvacenoOdProdavca": true,
     "tekst": "Jako mi se svidja",
     "ocena": 5,
     "obrisan": false
@@ -12,7 +12,7 @@
     "ID": "7796095324",
     "korisnik": "matija",
     "manifestacijaID": "1",
-    "prihvacenoOdProdavca": true,
+    "prihvacenoOdProdavca": false,
     "tekst": "Sjajno sjajno",
     "ocena": 5,
     "obrisan": false
