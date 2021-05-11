@@ -1,0 +1,20 @@
+[
+  {
+    "ID": "4868220569",
+    "korisnik": "matija",
+    "manifestacijaID": "1",
+    "prihvacenoOdProdavca": false,
+    "tekst": "Jako mi se svidja",
+    "ocena": 5,
+    "obrisan": false
+  },
+  {
+    "ID": "7796095324",
+    "korisnik": "matija",
+    "manifestacijaID": "1",
+    "prihvacenoOdProdavca": true,
+    "tekst": "Sjajno sjajno",
+    "ocena": 5,
+    "obrisan": false
+  }
+]
