@@ -500,6 +500,14 @@ public class Main {
             userDAO.saveKorisnici();
             return "OK";
         });
+
+        delete("rest/delete/manifestacija/:manifestacijaID", (req, res) -> {
+            String manifestacijaID = req.params(":manifestacijaID");
+
+            manifestationDAO.getManifestacijaByID(manifestacijaID).setObrisana(true);
+            manifestationDAO.saveManifestacije();
+            return "OK";
+        });
     }
 
     public static void dumpManifestations() throws IOException {

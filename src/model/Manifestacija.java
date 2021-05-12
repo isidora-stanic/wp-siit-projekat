@@ -1,7 +1,6 @@
 package model;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class Manifestacija {
     private String ID;
@@ -15,10 +14,12 @@ public class Manifestacija {
     private Status status;
     private Lokacija lokacija;
     private String slika;
+    private boolean obrisana;
 
     public Manifestacija() {
         this.prodatoKarata = 0;
         this.status = Status.NEAKTIVNA;
+        this.obrisana = false;
     }
 
     public Manifestacija(String ID, String ime, String tip, int ukupnoMesta, Date vremeOdrzavanja, Double cenaKarte, Lokacija lokacija, String slika) {
@@ -111,6 +112,14 @@ public class Manifestacija {
 
     public void setSlika(String slika) {
         this.slika = slika;
+    }
+
+    public boolean isObrisana() {
+        return obrisana;
+    }
+
+    public void setObrisana(boolean obrisana) {
+        this.obrisana = obrisana;
     }
 
     @Override

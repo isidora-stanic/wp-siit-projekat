@@ -12,7 +12,7 @@
     "ID": "7796095324",
     "korisnik": "matija",
     "manifestacijaID": "1",
-    "prihvacenoOdProdavca": false,
+    "prihvacenoOdProdavca": true,
     "tekst": "Sjajno sjajno",
     "ocena": 5,
     "obrisan": false
