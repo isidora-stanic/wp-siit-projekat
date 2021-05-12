@@ -17,6 +17,8 @@ Vue.component("manifestation-list", {
                 return this.manifestacije.filter(manifestacija => manifestacija.status !== 'ODBIJENA')
             if (this.context === 'NEW')
                 return this.manifestacije.filter(manifestacija => manifestacija.status === 'NEAKTIVNA')
+            if (this.context === 'DECLINED')
+                return this.manifestacije.filter(manifestacija => manifestacija.status === 'ODBIJENA')
             return this.manifestacije
         }
     },
@@ -132,6 +134,11 @@ Vue.component("manifestation-list", {
                                 Prihvati
                              </button>
                         </template>
+                        <template v-else-if="context === 'DECLINED'"> 
+                             <button class="btn btn-light d-flex float-right" @click="prihvati(manifestacija.ID)">
+                                Prihvati
+                             </button>
+                        </template>
                      </div>
                 </div>
             </div>
@@ -174,10 +181,22 @@ Vue.component("manifestation-list", {
             });
         },
         prihvati(manifestacijaID) {
-            alert('Prihvatanje manifestacije ' + manifestacijaID)
+            axios
+                .put('rest/prihvati/manifestacija', {manifestacijaID: manifestacijaID})
+                .then(response => {
+                    console.log(response)
+                    alert('Manifestacija prihvaćena')
+                    this.$router.go()
+                })
         },
         odbij(manifestacijaID) {
-            alert('Odbijanje manifestacije ' + manifestacijaID)
+            axios
+                .put('rest/odbij/manifestacija', {manifestacijaID: manifestacijaID})
+                .then(response => {
+                    console.log(response)
+                    alert('Manifestacija odbijena')
+                    this.$router.go()
+                })
         }
     }
 })

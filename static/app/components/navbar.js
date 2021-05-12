@@ -39,7 +39,9 @@ Vue.component("navbar", {
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('new/manifestations')">
                                     PREGLED NOVIH MANIFESTACIJA
                                 </a></li>
-                                <li><a class="nav-link" href="#">PREGLED ODBIJENIH MANIFESTACIJA</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('declined/manifestations')">
+                                    PREGLED ODBIJENIH MANIFESTACIJA
+                                </a></li>
                                 <li><a class="nav-link" href="#">PREGLED SVIH KARATA</a></li>
                             </template>
                             <template v-else-if="trenutniKorisnik.uloga=='KUPAC'">

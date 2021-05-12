@@ -468,6 +468,24 @@ public class Main {
            return "OK";
         });
 
+        put("rest/prihvati/manifestacija", (req, res) -> {
+            HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+            String manifestacijaID = userMap.get("manifestacijaID");
+
+            manifestationDAO.getManifestacijaByID(manifestacijaID).setStatus(Manifestacija.Status.AKTIVNA);
+            manifestationDAO.saveManifestacije();
+            return "OK";
+        });
+
+        put("rest/odbij/manifestacija", (req, res) -> {
+            HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+            String manifestacijaID = userMap.get("manifestacijaID");
+
+            manifestationDAO.getManifestacijaByID(manifestacijaID).setStatus(Manifestacija.Status.ODBIJENA);
+            manifestationDAO.saveManifestacije();
+            return "OK";
+        });
+
 
 
         /* DELETE METODE */
