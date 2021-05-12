@@ -18,9 +18,9 @@
   "uloga" : "KUPAC",
   "korisnikAktivan" : true,
   "korisnikBlokiran" : false,
-  "sakupljenihPoena" : -3511,
+  "sakupljenihPoena" : 3870,
   "tip" : "BRONZE",
-  "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "8536330690" ] ]
+  "kupljeneKarte" : [ "java.util.ArrayList", [ "3372450789", "4148644564", "8536330690", "7643577211" ] ]
 } ], [ "model.Prodavac", {
   "username" : "prodavko",
   "password" : "p1234",

@@ -9,6 +9,9 @@ const manifestationEdit = {template: '<manifestation-edit></manifestation-edit>'
 const sellerManifestations = {template: '<seller-manifestations></seller-manifestations>'}
 const manifestationBuyers = {template: '<manifestation-buyers></manifestation-buyers>'}
 const cards = {template: '<cards></cards>'}
+const userList = {template: '<user-list></user-list>'}
+const allUsersList = {template: '<all-users-list></all-users-list>'}
+const susUsersList = {template: '<sus-users-list></sus-users-list>'}
 
 const router = new VueRouter({
     mode: 'hash',
@@ -25,6 +28,8 @@ const router = new VueRouter({
         {path: '/buyers/manifestation/:id', component: manifestationBuyers},
         {path: '/seller/manifestations', component: sellerManifestations},
         {path: '/cards', component: cards},
+        {path: '/users/all', component: allUsersList},
+        {path: '/users/sus', component: susUsersList},
     ]
 })
 

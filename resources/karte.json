@@ -68,5 +68,15 @@
     "status": "REZERVISANO",
     "tip": "VIP",
     "obrisan": false
+  },
+  {
+    "ID": "7643577211",
+    "manifestacijaID": "2",
+    "datumManifestacije": "May 20, 2021, 4:11:00 PM",
+    "cena": 900.0,
+    "imeKupca": "matija matovic",
+    "status": "OTKAZANO",
+    "tip": "REGULAR",
+    "obrisan": false
   }
 ]
