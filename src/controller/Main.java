@@ -1,9 +1,6 @@
 package controller;
 
-import DAO.CardDAO;
-import DAO.CommentDAO;
-import DAO.ManifestationDAO;
-import DAO.UserDAO;
+import DAO.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import model.*;
@@ -14,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
@@ -22,6 +21,7 @@ public class Main {
     private static final CardDAO cardDAO = new CardDAO();
     private static final UserDAO userDAO = new UserDAO();
     private static final CommentDAO commentDAO = new CommentDAO();
+    private static final OtkazivanjeDAO otkazivanjeDAO = new OtkazivanjeDAO();
     private static final Gson g = new Gson();
 
     public static void main(String[] args) throws IOException {
@@ -29,6 +29,7 @@ public class Main {
         userDAO.loadKorisnici();
         cardDAO.loadKarte();
         commentDAO.loadKomentari();
+        otkazivanjeDAO.loadOtkazivanja();
 
         staticFiles.externalLocation(new File("./static").getCanonicalPath());
         port(8080);
@@ -127,6 +128,40 @@ public class Main {
            res.type("application/json");
            String manifestationID = req.params(":manifestationID");
            return g.toJson(commentDAO.getKomentariByManifestacija(manifestationID));
+        });
+
+        get("/rest/korisnici/all", (req, res) -> {
+            res.type("application/json");
+            return g.toJson(
+                    userDAO.getKorisnici()
+                            .stream()
+                            .filter(Korisnik::isKorisnikAktivan)        //Samo aktivne korisnike vraca
+                            .collect(Collectors.toList()));
+        });
+
+        get("/rest/korisnici/sus", (req, res) -> {
+            res.type("application/json");
+            ArrayList<Kupac> susKupci = new ArrayList<>();
+            Date now = new Date();
+            for (Korisnik k : userDAO.getKorisnici()) {
+                if (k.getUloga() != Korisnik.Uloga.KUPAC)
+                    continue;
+
+                Kupac kupac = (Kupac) k;
+                ArrayList<Otkazivanje> otkazivanja
+                        = (ArrayList<Otkazivanje>) otkazivanjeDAO.getOtkazivanjaByKorisnik(k.getUsername());
+                int otkazanihKarata = 0;
+                for (Otkazivanje otkazivanje : otkazivanja) {
+                    long diff_millis = Math.abs(otkazivanje.getDatumOtkazivanja().getTime() - now.getTime());
+                    long diff_in_days = TimeUnit.DAYS.convert(diff_millis, TimeUnit.MILLISECONDS);
+                    if (diff_in_days <= 30)
+                        otkazanihKarata++;
+                }
+                if (otkazanihKarata >= 1)   //TODO: Promeniti na 5
+                    susKupci.add(kupac);
+            }
+
+            return g.toJson(susKupci);
         });
 
         /* POST METODE */
@@ -231,12 +266,15 @@ public class Main {
             int brojIzgubljenihBodova = (int) (karta.getCena()/1000 * 133 * 4);
 
             karta.setStatus(Karta.Status.OTKAZANO);
-            //k.getKupljeneKarte().remove(karta.getID());
             k.setSakupljenihPoena(k.getSakupljenihPoena() - brojIzgubljenihBodova);
 
             cardDAO.saveKarte();
             manifestationDAO.saveManifestacije();
             userDAO.saveKorisnici();
+
+            Otkazivanje otkazivanje = new Otkazivanje(username, id, new Date());
+            otkazivanjeDAO.dodajOtkazivanje(otkazivanje);
+            otkazivanjeDAO.saveOtkazivanja();
 
             return g.toJson(m);
         });
@@ -461,5 +499,13 @@ public class Main {
         userDAO.dodajKorisnika(k2);
         userDAO.dodajKorisnika(k3);
         userDAO.saveKorisnici();
+    }
+
+    public static void dumpOtkazivanja() throws IOException {
+        Otkazivanje o1 = new Otkazivanje("matija", "1", new Date());
+        Otkazivanje o2 = new Otkazivanje("matija", "2", new Date());
+        otkazivanjeDAO.dodajOtkazivanje(o1);
+        otkazivanjeDAO.dodajOtkazivanje(o2);
+        otkazivanjeDAO.saveOtkazivanja();
     }
 }
