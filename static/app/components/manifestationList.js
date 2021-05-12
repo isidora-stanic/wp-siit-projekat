@@ -5,6 +5,21 @@ Vue.component("manifestation-list", {
         }
     },
     props: ['context'],
+    computed: {
+        korisnickaUloga(){
+            let korisnikJSON = localStorage.getItem('user')
+            if (!korisnikJSON)
+                return 'NONE'
+            return JSON.parse(korisnikJSON).uloga
+        },
+        manifestacijeZaPrikaz() {
+            if (this.korisnickaUloga === 'KUPAC')
+                return this.manifestacije.filter(manifestacija => manifestacija.status !== 'ODBIJENA')
+            if (this.context === 'NEW')
+                return this.manifestacije.filter(manifestacija => manifestacija.status === 'NEAKTIVNA')
+            return this.manifestacije
+        }
+    },
     template: `
         <div>
             <div class="container">
@@ -93,7 +108,7 @@ Vue.component("manifestation-list", {
                 <hr />
                 
                  <div class="jumbotron row" style="padding-top: 15px; padding-bottom: 15px"
-                 v-for="manifestacija in manifestacije"
+                 v-for="manifestacija in manifestacijeZaPrikaz"
                  :key="manifestacija.ID">
                      <div class="col" style="overflow: hidden; height: 250px;">
                          <img class="" v-bind:src="'../images/' + manifestacija.slika">
@@ -104,10 +119,19 @@ Vue.component("manifestation-list", {
                         <p>{{manifestacija.vremeOdrzavanja}} | {{manifestacija.tip}}</p>
                         <p>Cena karte: {{manifestacija.cenaKarte}}</p>
                         <p>{{manifestacija.lokacija.adresa.ulicaIBroj}}, {{manifestacija.lokacija.adresa.mesto}}</p>
+                        <p>Status: {{manifestacija.status}}</p>
                         <hr />
                         <button type="button" class="btn btn-lg btn-primary" @click="posetiManifestaciju(manifestacija.ID)">
                             Detalji
                         </button>
+                        <template v-if="context === 'NEW'">
+                             <button class="btn btn-secondary d-flex float-right" @click="odbij(manifestacija.ID)">
+                                Odbij
+                            </button>
+                             <button class="btn btn-light d-flex float-right" @click="prihvati(manifestacija.ID)">
+                                Prihvati
+                             </button>
+                        </template>
                      </div>
                 </div>
             </div>
@@ -148,6 +172,12 @@ Vue.component("manifestation-list", {
                 }
                 return 0;
             });
+        },
+        prihvati(manifestacijaID) {
+            alert('Prihvatanje manifestacije ' + manifestacijaID)
+        },
+        odbij(manifestacijaID) {
+            alert('Odbijanje manifestacije ' + manifestacijaID)
         }
     }
 })

@@ -47,7 +47,7 @@
     "prodatoKarata": 0,
     "vremeOdrzavanja": "Apr 4, 2021, 6:11:52 PM",
     "cenaKarte": 1200.0,
-    "status": "NEAKTIVNA",
+    "status": "AKTIVNA",
     "lokacija": {
       "geografskaSirina": 25.0,
       "geografskaDuzina": 35.0,

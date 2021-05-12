@@ -7,9 +7,9 @@ const manifestation = {template: '<manifestation></manifestation>'}
 const manifestationForm = {template: '<manifestation-form></manifestation-form>'}
 const manifestationEdit = {template: '<manifestation-edit></manifestation-edit>'}
 const sellerManifestations = {template: '<seller-manifestations></seller-manifestations>'}
+const newManifestations = {template: '<new-manifestations></new-manifestations>'}
 const manifestationBuyers = {template: '<manifestation-buyers></manifestation-buyers>'}
 const cards = {template: '<cards></cards>'}
-const userList = {template: '<user-list></user-list>'}
 const allUsersList = {template: '<all-users-list></all-users-list>'}
 const susUsersList = {template: '<sus-users-list></sus-users-list>'}
 
@@ -30,6 +30,7 @@ const router = new VueRouter({
         {path: '/cards', component: cards},
         {path: '/users/all', component: allUsersList},
         {path: '/users/sus', component: susUsersList},
+        {path: '/new/manifestations/', component: newManifestations}
     ]
 })
 
