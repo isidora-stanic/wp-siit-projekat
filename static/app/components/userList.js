@@ -6,6 +6,14 @@ Vue.component("user-list", {
         }
     },
     props: ['context'],
+    computed: {
+        filteredUsers() {
+            if (this.userSearchQuery.trim()) {
+                return this.users.filter(this.searchCriteria(this.userSearchQuery.trim()))
+            }
+            return this.users
+        }
+    },
     template: `
         <div class="container">
             <div class="page-header">
@@ -20,7 +28,7 @@ Vue.component("user-list", {
             </div>
             <hr />
             <div class="jumbotron row" style="padding-top: 15px; padding-bottom: 15px"
-             v-for="korisnik in users"
+             v-for="korisnik in filteredUsers"
              :key="korisnik.username">
                  <div class="col">
                     <h3>{{korisnik.username}}</h3>
@@ -88,5 +96,15 @@ Vue.component("user-list", {
                     this.$router.go()
                 })
         },
+        searchCriteria(query) {
+            return function (user) {
+                let punoIme = user.ime + ' ' + user.prezime
+                if (punoIme.toUpperCase().includes(query.toUpperCase()))
+                    return true
+                if (user.username.toUpperCase().includes(query.toUpperCase()))
+                    return true
+                return false
+            }
+        }
     },
 })
