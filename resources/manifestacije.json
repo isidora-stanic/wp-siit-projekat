@@ -17,7 +17,8 @@
         "postanskiBroj": "31000"
       }
     },
-    "slika": "zvonko_bogdan_2019.jpg"
+    "slika": "zvonko_bogdan_2019.jpg",
+    "obrisana": false
   },
   {
     "ID": "2",
@@ -37,7 +38,8 @@
         "postanskiBroj": "31000"
       }
     },
-    "slika": "zvonko_bogdan_2019.jpg"
+    "slika": "zvonko_bogdan_2019.jpg",
+    "obrisana": false
   },
   {
     "ID": "3",
@@ -57,7 +59,8 @@
         "postanskiBroj": "31000"
       }
     },
-    "slika": "zvonko_bogdan_2019.jpg"
+    "slika": "zvonko_bogdan_2019.jpg",
+    "obrisana": false
   },
   {
     "ID": "4",
@@ -77,6 +80,7 @@
         "postanskiBroj": "31000"
       }
     },
-    "slika": "zvonko_bogdan_2019.jpg"
+    "slika": "zvonko_bogdan_2019.jpg",
+    "obrisana": false
   }
 ]

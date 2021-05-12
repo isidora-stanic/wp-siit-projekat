@@ -76,6 +76,10 @@ Vue.component("manifestation", {
                     v-if="prodavacPostavio" @click="viewBuyers">
                     Kupci
                 </button>
+                <button class="btn btn-lg btn-light d-flex float-right"
+                    v-if="korisnickaUloga === 'ADMIN'" @click="deleteManifestation">
+                    Izbriši
+                </button>
                 <br /><br /><br />
                 <hr />
                 <div id="komentari row h-100 justify-content-center align-items-center">
@@ -205,6 +209,17 @@ Vue.component("manifestation", {
                 })
                 .catch(error => {
                     alert(error.response.data)
+                })
+        },
+        deleteManifestation() {
+            let path = 'rest/delete/manifestacija/' + this.$route.params.id
+            alert('Manifestacija će biti izbrisana')
+            axios
+                .delete(path)
+                .then(response => {
+                    alert('Manifestacija je izbrisana')
+                    console.log(response)
+                    this.$router.push('/')
                 })
         }
     },
