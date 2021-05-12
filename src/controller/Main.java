@@ -144,7 +144,7 @@ public class Main {
             ArrayList<Kupac> susKupci = new ArrayList<>();
             Date now = new Date();
             for (Korisnik k : userDAO.getKorisnici()) {
-                if (k.getUloga() != Korisnik.Uloga.KUPAC)
+                if (k.getUloga() != Korisnik.Uloga.KUPAC || !k.isKorisnikAktivan())
                     continue;
 
                 Kupac kupac = (Kupac) k;
@@ -455,6 +455,31 @@ public class Main {
             Komentar komentar = commentDAO.getKomentarByID(commentID);
             komentar.setPrihvacenoOdProdavca(true);
             commentDAO.saveKomentari();
+            return "OK";
+        });
+
+        put("rest/user/block", (req, res) -> {
+           HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+           String username = userMap.get("username");
+           boolean blockValue = Boolean.parseBoolean(userMap.get("value"));
+
+           userDAO.getKorisnikByUsername(username).setKorisnikBlokiran(blockValue);
+           userDAO.saveKorisnici();
+           return "OK";
+        });
+
+
+
+        /* DELETE METODE */
+        /* =========================================================================== */
+        /* =========================================================================== */
+        /* =========================================================================== */
+
+        delete("rest/user/delete/:username", (req, res) -> {
+            String username = req.params(":username");
+
+            userDAO.getKorisnikByUsername(username).setKorisnikAktivan(false);
+            userDAO.saveKorisnici();
             return "OK";
         });
     }

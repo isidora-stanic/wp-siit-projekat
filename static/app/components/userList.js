@@ -36,8 +36,11 @@ Vue.component("user-list", {
                     </template>
                     <hr />
                     <template v-if="korisnik.uloga !== 'ADMIN'">
-                        <button class="btn btn-primary">Blokiraj</button>
-                        <button class="btn btn-primary">Obrisi</button>
+                        <button v-if="!korisnik.korisnikBlokiran" 
+                            class="btn btn-primary" @click="block(korisnik.username)">Blokiraj</button>
+                        <button v-else 
+                            class="btn btn-primary" @click="unblock(korisnik.username)">Odblokiraj</button>   
+                        <button class="btn btn-primary" @click="deleteUser(korisnik.username)">Obrisi</button>
                     </template>
                  </div>
             </div>
@@ -56,5 +59,34 @@ Vue.component("user-list", {
             .catch(error => {
                 console.log(error.response.data)
             })
+    },
+    methods: {
+        block(user) {
+            axios
+                .put('rest/user/block', {username: user, value: 'true'})
+                .then(response => {
+                    alert('Korisnik blokiran')
+                    console.log(response)
+                    this.$router.go()
+                })
+        },
+        unblock(user) {
+            axios
+                .put('rest/user/block', {username: user, value: 'false'})
+                .then(response => {
+                    alert('Korisnik odblokiran')
+                    console.log(response)
+                    this.$router.go()
+                })
+        },
+        deleteUser(user) {
+            axios
+                .delete('rest/user/delete/' + user)
+                .then(response => {
+                    alert('Korisnik obrisan')
+                    console.log(response)
+                    this.$router.go()
+                })
+        },
     },
 })
