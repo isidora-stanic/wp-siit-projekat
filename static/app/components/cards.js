@@ -64,11 +64,11 @@ Vue.component("cards", {
                                         <div class="row justify-content-between" style="margin: 5px;">
                                             <div class="form-group col-xs-6">
                                                 <label for="man-cena-od" class="col-form-label">Cena od:</label>
-                                                <input type="number" class="form-control" id="man-cena-od" v-model="pretraga.cenaOd">
+                                                <input type="number" class="form-control" min="0" id="man-cena-od" v-model="pretraga.cenaOd">
                                             </div>
                                             <div class="form-group col-xs-6">
                                                 <label for="man-cena-do" class="col-form-label">Cena do:</label>
-                                                <input type="number" class="form-control" id="man-cena-do" v-model="pretraga.cenaDo">
+                                                <input type="number" class="form-control" min="0" id="man-cena-do" v-model="pretraga.cenaDo">
                                             </div>
                                         </div>
                                     </form>
@@ -124,9 +124,12 @@ Vue.component("cards", {
                         Sortiraj
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" v-on:click="sortirajKarte('ime')">Ime</a>
-                        <a class="dropdown-item" v-on:click="sortirajKarte('cena')">Cena</a>
-                        <a class="dropdown-item" v-on:click="sortirajKarte('vreme')">Vreme</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('ime1')">Ime Rastuće</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('ime2')">Ime Opadajuće</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('cena1')">Cena Rastuće</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('cena2')">Cena Opadajuće</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('vreme1')">Vreme Rastuće</a>
+                        <a class="dropdown-item" v-on:click="sortirajKarte('vreme2')">Vreme Opadajuće</a>
                     </div>
                 </div>
 
@@ -216,15 +219,25 @@ Vue.component("cards", {
         },
         sortirajKarte(kriterijum){
         this.karte.sort(function compareFn(a, b) {
-            if (kriterijum === "ime"){
+            if (kriterijum === "ime1"){
                 return a.manifestacija.ime.localeCompare(b.manifestacija.ime);
-            } else if (kriterijum === "cena"){
+            } else if (kriterijum === "ime2"){
+                return a.manifestacija.ime.localeCompare(b.manifestacija.ime) * (-1);
+            } else if (kriterijum === "cena1"){
                 if (a.cena < b.cena) return -1;
                 if (a.cena > b.cena) return 1;
                 return 0;
-            } else if (kriterijum === "vreme"){
+            } else if (kriterijum === "cena2"){
+                if (a.cena < b.cena) return 1;
+                if (a.cena > b.cena) return -1;
+                return 0;
+            } else if (kriterijum === "vreme1"){
                 if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return -1;
                 if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return 1;
+                return 0;
+            } else if (kriterijum === "vreme2"){
+                if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return 1;
+                if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return -1;
                 return 0;
             }
             return 0;
@@ -234,14 +247,19 @@ Vue.component("cards", {
             this.pretrazeneKarte = [];
 
             for (const k of this.karte) {
-                console.log(k.manifestacija.ime.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase()));
-                if ((k.manifestacija.ime.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase())) &&
+                console.log(k.manifestacija.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase()));
+                if ((k.manifestacija.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase())) &&
                 (k.cena >= this.pretraga.cenaOd && k.cena <= this.pretraga.cenaDo) &&
                 (k.datumManifestacije >= this.pretraga.datumOd && k.datumManifestacije <= this.pretraga.datumDo))
                     this.pretrazeneKarte.push(k);
             }
             alert(JSON.stringify(this.pretrazeneKarte));
             this.karte = this.pretrazeneKarte;
+
+            this.pretraga.datumOd = Date.now();
+            this.pretraga.datumDo = Date.now();
+            this.pretraga.cenaOd = 0;
+            this.pretraga.cenaDo = Number.MAX_SAFE_INTEGER;
 
         },
         filtrirajKarte() {

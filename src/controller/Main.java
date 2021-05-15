@@ -6,11 +6,8 @@ import com.google.gson.GsonBuilder;
 import model.*;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,7 +38,11 @@ public class Main {
 
         get("/rest/manifestacije", (req, res) -> {
            res.type("application/json");
-           return g.toJson(manifestationDAO.getManifestacije());
+           List<Manifestacija> manifestacije = manifestationDAO.getManifestacije();
+           List<Manifestacija> manifestacijeSortirane = manifestacije.stream()
+                   .sorted(Comparator.comparing(Manifestacija::getVremeOdrzavanja).reversed())
+                   .collect(Collectors.toList());
+           return g.toJson(manifestacijeSortirane);
         });
 
         get("/rest/manifestacije-prodavca/:username", (req, res) -> {

@@ -1,7 +1,20 @@
 Vue.component("manifestation-list", {
     data: function() {
         return {
-            manifestacije: []
+            manifestacije: [],
+            filter: {
+                tip: '',
+                nerasprodateKarte: false
+            },
+            pretraga: {
+                ime: '',
+                mesto: '',
+                datumOd: Date.now(),
+                datumDo: Date.now(),
+                cenaOd: 0,
+                cenaDo: Number.MAX_SAFE_INTEGER
+            },
+            komentari: []
         }
     },
     props: ['context'],
@@ -31,11 +44,13 @@ Vue.component("manifestation-list", {
                 
                 <div class="input-group">
                     <div class="form-outline">
-                        <input type="search" id="man-ime" class="form-control" placeholder="Pretraga (ime)"/>
+                        <input type="search" id="man-ime-spolja" class="form-control" placeholder="Pretraga (ime)" v-model="pretraga.ime"/>
                     </div>
-                    <button type="button" class="btn btn-primary">Traži</button>
-                    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#detailed-search">Detaljna pretraga</button>
-                    
+                    <button type="button" class="btn btn-primary" @click="pretraziManifestacije()">Traži</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#detailed-search">Detaljna pretraga</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter">Filtriranje</button>
+
+                    <!--DETALJNA PRETRAGA-->
                     <div class="modal fade" id="detailed-search" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -46,48 +61,72 @@ Vue.component("manifestation-list", {
                                 <div class="modal-body">
                                     <form>
                                         <div class="form-group">
+                                            <label for="man-ime" class="col-form-label">Ime:</label>
+                                            <input v-model="pretraga.ime" type="text" class="form-control" id="man-ime">
+                                        </div>
+                                        <div class="form-group">
                                             <label for="man-tip" class="col-form-label">Tip:</label>
-                                            <input type="text" class="form-control" id="man-tip">
+                                            <input v-model="pretraga.tip" type="text" class="form-control" id="man-tip">
                                         </div>
                                         <div class="form-group">
                                             <label for="man-mesto" class="col-form-label">Mesto:</label>
-                                            <input type="text" class="form-control" id="man-mesto">
+                                            <input v-model="pretraga.mesto" type="text" class="form-control" id="man-mesto">
                                         </div>
                                         <div class="row justify-content-between" style="margin: 5px;">
                                             <div class="form-group col-xs-6">
                                                 <label for="man-dat-od" class="col-form-label">Datum od:</label>
-                                                <input type="date" class="form-control" id="man-dat-od">
+                                                <input  v-model="pretraga.datumOd"type="date" class="form-control" id="man-dat-od">
                                             </div>
                                             <div class="form-group col-xs-6">
                                                 <label for="man-dat-do" class="col-form-label">Datum do:</label>
-                                                <input type="date" class="form-control" id="man-dat-do">
+                                                <input v-model="pretraga.datumDo" type="date" class="form-control" id="man-dat-do">
                                             </div>
                                         </div>
                                         <div class="row justify-content-between" style="margin: 5px;">
                                             <div class="form-group col-xs-6">
                                                 <label for="man-cena-od" class="col-form-label">Cena od:</label>
-                                                <input type="number" class="form-control" id="man-cena-od">
+                                                <input v-model="pretraga.cenaOd" min="0" type="number" class="form-control" id="man-cena-od">
                                             </div>
                                             <div class="form-group col-xs-6">
                                                 <label for="man-cena-do" class="col-form-label">Cena do:</label>
-                                                <input type="number" class="form-control" id="man-cena-do">
-                                            </div>
-                                        </div>
-                                        <div class="row justify-content-between" style="margin: 5px;">
-                                            <div class="form-group col-xs-6">
-                                                <label for="man-ocena-od" class="col-form-label">Ocena od:</label>
-                                                <input type="number" class="form-control" id="man-ocena-od">
-                                            </div>
-                                            <div class="form-group col-xs-6">
-                                                <label for="man-ocena-do" class="col-form-label">Ocena do:</label>
-                                                <input type="number" class="form-control" id="man-ocena-do">
+                                                <input v-model="pretraga.cenaDo" min="0" type="number" class="form-control" id="man-cena-do">
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
-                                    <button type="button" class="btn btn-primary">Pretraži</button>
+                                    <button type="button" class="btn btn-primary" @click="pretraziManifestacije()">Pretraži</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FILTER-->
+                    <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="src-lbl">Filtriranje</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="man-tip" class="col-form-label">Tip:</label>
+                                            <input id="man-tip" v-model="filter.tip" type="text" name="format" value=""/>
+                                        </div>
+                                        <div class="form-check">
+                                          <input v-model="filter.nerasprodateKarte" class="form-check-input" type="checkbox" value="" id="man-nerasprodate">
+                                          <label class="form-check-label" for="man-nerasprodate">
+                                            Nerasprodate
+                                          </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
+                                    <button type="button" class="btn btn-primary" @click="filtrirajKarte()" data-dismiss="modal">Filtriraj</button>
                                 </div>
                             </div>
                         </div>
@@ -99,10 +138,14 @@ Vue.component("manifestation-list", {
                         Sortiraj
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" @click="sortirajManifestacije('ime')">Ime</a>
-                        <a class="dropdown-item" @click="sortirajManifestacije('cena')">Cena</a>
-                        <a class="dropdown-item" @click="sortirajManifestacije('vreme')">Vreme</a>
-                        <a class="dropdown-item" @click="sortirajManifestacije('lokacija')">Lokacija</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('ime1')">Ime Rastuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('ime2')">Ime Opadajuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('cena1')">Cena Rastuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('cena2')">Cena Opadajuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('vreme1')">Vreme Rastuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('vreme2')">Vreme Opadajuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('lokacija1')">Lokacija Rastuće</a>
+                        <a class="dropdown-item" @click="sortirajManifestacije('lokacija2')">Lokacija Opadajuće</a>
                     </div>
                 </div>
                 
@@ -155,6 +198,7 @@ Vue.component("manifestation-list", {
             .then(response => {
                 this.manifestacije = response.data
             })
+
     },
     methods: {
         posetiManifestaciju(manifestacijaID) {
@@ -162,23 +206,66 @@ Vue.component("manifestation-list", {
         },
         sortirajManifestacije(kriterijum){
             this.manifestacije.sort(function compareFn(a, b) {
-                if (kriterijum === "ime"){
+                if (kriterijum === "ime1") {
                     return a.ime.localeCompare(b.ime);
-                } else if (kriterijum === "cena"){
+                } else if (kriterijum === "ime2") {
+                    return a.ime.localeCompare(b.ime) * (-1);
+                } else if (kriterijum === "cena1") {
                     if (a.cenaKarte < b.cenaKarte) return -1;
                     if (a.cenaKarte > b.cenaKarte) return 1;
                     return 0;
-                } else if (kriterijum === "vreme"){
+                } else if (kriterijum === "cena2") {
+                    if (a.cenaKarte < b.cenaKarte) return 1;
+                    if (a.cenaKarte > b.cenaKarte) return -1;
+                    return 0;
+                } else if (kriterijum === "vreme1") {
                     if (Date.parse(a.vremeOdrzavanja) < Date.parse(b.vremeOdrzavanja)) return -1;
                     if (Date.parse(a.vremeOdrzavanja) > Date.parse(b.vremeOdrzavanja)) return 1;
                     return 0;
-                } else if (kriterijum === "lokacija"){
+                } else if (kriterijum === "vreme2") {
+                    if (Date.parse(a.vremeOdrzavanja) < Date.parse(b.vremeOdrzavanja)) return 1;
+                    if (Date.parse(a.vremeOdrzavanja) > Date.parse(b.vremeOdrzavanja)) return -1;
+                    return 0;
+                } else if (kriterijum === "lokacija1"){
                     let aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
                     let bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
                     return aAddress.localeCompare(bAddress);
+                } else if (kriterijum === "lokacija2") {
+                    let aAddress = a.lokacija.adresa.mesto + ' ' + a.lokacija.adresa.ulicaIBroj;
+                    let bAddress = b.lokacija.adresa.mesto + ' ' + b.lokacija.adresa.ulicaIBroj;
+                    return aAddress.localeCompare(bAddress) * (-1);
                 }
                 return 0;
             });
+        },
+        pretraziManifestacije() {
+            this.pretrazeneManifestacije = [];
+            //TODO: DODATI OSTALE PROVERE........
+
+            for (const k of this.manifestacije) {
+                console.log(k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase()));
+
+                if ((k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase())) &&
+                ((k.lokacija.adresa.mesto.toUpperCase().includes(this.pretraga.mesto.toUpperCase())) ||
+                (k.lokacija.adresa.ulicaIBroj.toUpperCase().includes(this.pretraga.mesto.toUpperCase()))) &&
+                (k.cenaKarte >= this.pretraga.cenaOd && k.cenaKarte <= this.pretraga.cenaDo) &&
+                (k.vremeOdrzavanja >= this.pretraga.datumOd && k.vremeOdrzavanja <= this.pretraga.datumDo))
+                    this.pretrazeneManifestacije.push(k);
+            }
+            alert(JSON.stringify(this.pretrazeneManifestacije));
+            this.manifestacije = this.pretrazeneManifestacije;
+
+            this.pretraga.mesto = '';
+            this.pretraga.datumOd = Date.now();
+            this.pretraga.datumDo = Date.now();
+            this.pretraga.cenaOd = 0;
+            this.pretraga.cenaDo = Number.MAX_SAFE_INTEGER;
+
+        },
+        filtrirajKarte() {
+            this.manifestacije = this.manifestacije.filter(x => (x.tip.toLowerCase().includes(this.filter.tip.toLowerCase())));
+            if (this.filter.nerasprodateKarte)
+                this.manifestacije = this.manifestacije.filter(x => (x.ukupnoMesta - x.prodatoKarata > 0));
         },
         prihvati(manifestacijaID) {
             axios

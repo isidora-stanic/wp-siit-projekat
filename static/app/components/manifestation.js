@@ -38,6 +38,8 @@ Vue.component("manifestation", {
                         <h5>Fan pit: <b>{{manifestacija.cenaKarte * 2}}</b> RSD</h5>
                         <h6>VIP: <b>{{manifestacija.cenaKarte * 4}}</b> RSD</h6>
                         <p>Preostalo karata: {{manifestacija.ukupnoMesta - manifestacija.prodatoKarata}}</p>
+                        <p :class="{'badge-primary': manifestacija.status === 'AKTIVNA', 'badge-warning': manifestacija.status === 'NEAKTIVNA'}" class="badge">{{manifestacija.status}}</p>
+                        <div v-if="manifestacija.status === 'AKTIVNA' && Date.parse(manifestacija.vremeOdrzavanja) < new Date">
                         <hr/>
                         <div class="row container">
                                             <!--<button class="btn btn-secondary col" @click="kupovina.kolicina--">-</button>
@@ -50,20 +52,21 @@ Vue.component("manifestation", {
 
                             <div class="form-group ml-4">
                                 <label for="tip" class="col-form-label">Tip:</label>
-                                <select class="" v-model="kupovina.tip" id="tip">
+                                <select v-model="kupovina.tip" id="tip">
                                     <option value="REGULAR">Regular</option>
                                     <option value="FAN_PIT">Fan pit</option>
                                     <option value="VIP">VIP</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div v-if="" class="form-group">
                                 <button class="btn btn-primary ml-4" style="width: 250%" @click="kupi()">Kupi</button>
                             </div>
                         </div>
                         <hr/>
                         <div>
                             <h3>Ukupno: {{ukupnaCena}}</h3>
+                        </div>
                         </div>
 
                     </div>
