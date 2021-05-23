@@ -42,15 +42,14 @@ Vue.component("navbar", {
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('declined/manifestations')">
                                     PREGLED ODBIJENIH MANIFESTACIJA
                                 </a></li>
-                                <li><a class="nav-link" href="#">PREGLED SVIH KARATA</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('cards')">PREGLED SVIH KARATA</a></li>
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('register-seller')">
                                     DODAJ NOVOG PRODAVCA
                                 </a></li>
                             </template>
                             <template v-else-if="trenutniKorisnik.uloga=='KUPAC'">
-                                <li><a class="nav-link" href="#">KUPAC 1</a></li>
-                                <li><a class="nav-link" href="#">KUPAC 2</a></li>
-                                <li><a class="nav-link" href="#">KUPAC 3</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('')">PREGLED MANIFESTACIJA</a></li>
+                                <li><a class="nav-link" href="#" @click.prevent="redirect('cards')">PREGLED KARATA</a></li>
                             </template>
                             <template v-else-if="trenutniKorisnik.uloga=='PRODAVAC'">
                                 <li><a class="nav-link" href="#" @click.prevent="redirect('add/manifestation')">
@@ -67,15 +66,6 @@ Vue.component("navbar", {
                       </li>
                     <li v-if="loggedIn" class="nav-item">
                         <a class="nav-link" href="#" @click.prevent="redirect('userView')">PROFIL</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" @click.prevent="write">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
                     </li>
                 </ul>
             </div>
