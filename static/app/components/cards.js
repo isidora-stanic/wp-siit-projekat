@@ -218,29 +218,29 @@ Vue.component("cards", {
             this.$router.push('/manifestation/'+manifestacijaID);
         },
         sortirajKarte(kriterijum){
-        this.karte.sort(function compareFn(a, b) {
-            if (kriterijum === "ime1"){
-                return a.manifestacija.ime.localeCompare(b.manifestacija.ime);
-            } else if (kriterijum === "ime2"){
-                return a.manifestacija.ime.localeCompare(b.manifestacija.ime) * (-1);
-            } else if (kriterijum === "cena1"){
-                if (a.cena < b.cena) return -1;
-                if (a.cena > b.cena) return 1;
+            this.karte.sort(function compareFn(a, b) {
+                if (kriterijum === "ime1"){
+                    return a.manifestacija.ime.localeCompare(b.manifestacija.ime);
+                } else if (kriterijum === "ime2"){
+                    return a.manifestacija.ime.localeCompare(b.manifestacija.ime) * (-1);
+                } else if (kriterijum === "cena1"){
+                    if (a.cena < b.cena) return -1;
+                    if (a.cena > b.cena) return 1;
+                    return 0;
+                } else if (kriterijum === "cena2"){
+                    if (a.cena < b.cena) return 1;
+                    if (a.cena > b.cena) return -1;
+                    return 0;
+                } else if (kriterijum === "vreme1"){
+                    if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return -1;
+                    if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return 1;
+                    return 0;
+                } else if (kriterijum === "vreme2"){
+                    if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return 1;
+                    if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return -1;
+                    return 0;
+                }
                 return 0;
-            } else if (kriterijum === "cena2"){
-                if (a.cena < b.cena) return 1;
-                if (a.cena > b.cena) return -1;
-                return 0;
-            } else if (kriterijum === "vreme1"){
-                if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return -1;
-                if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return 1;
-                return 0;
-            } else if (kriterijum === "vreme2"){
-                if (Date.parse(a.datumManifestacije) < Date.parse(b.datumManifestacije)) return 1;
-                if (Date.parse(a.datumManifestacije) > Date.parse(b.datumManifestacije)) return -1;
-                return 0;
-            }
-            return 0;
             });
         },
         pretraziKarte() {

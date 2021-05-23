@@ -27,8 +27,8 @@ Vue.component("user-list", {
             <div class="input-group">
                 <div class="form-outline">
                     <input type="search" class="form-control" placeholder="Pretraga (ime)" v-model="userSearchQuery" />
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter">Filtriranje</button>
                 </div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter">Filtriranje</button>
 
                 <!--FILTER-->
                 <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
@@ -67,7 +67,26 @@ Vue.component("user-list", {
                 </div>
 
             </div>
+
+            <div class="dropdown float-right">
+                <button class="btn btn-lg btn-light dropdown-toggle" data-toggle="dropdown">
+                    Sortiraj
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('ime1')">Ime Rastuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('ime2')">Ime Opadajuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('prezime1')">Prezime Rastuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('prezime2')">Prezime Opadajuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('username1')">Korisničko Ime Rastuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('username2')">Korisničko Ime Opadajuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('bodovi1')">Bodovi Rastuće</a>
+                    <a class="dropdown-item" v-on:click="sortirajKorisnike('bodovi2')">Bodovi Opadajuće</a>
+                </div>
+            </div>
+
+            <br /><br />
             <hr />
+
             <div class="jumbotron row" style="padding-top: 15px; padding-bottom: 15px"
              v-for="korisnik in filteredUsers"
              :key="korisnik.username">
@@ -156,6 +175,36 @@ Vue.component("user-list", {
                 this.filter.tip = '';
                 this.users = this.users.filter(x => x.uloga.includes(this.filter.uloga));
             }
+        },
+        sortirajKorisnike(kriterijum) {
+            this.users.sort(function compareFn(a, b) {
+                if (kriterijum === "ime1"){
+                    return a.ime.localeCompare(b.ime);
+                } else if (kriterijum === "ime2"){
+                    return a.ime.localeCompare(b.ime) * (-1);
+                } else if (kriterijum === "prezime1"){
+                    return a.prezime.localeCompare(b.prezime);
+                } else if (kriterijum === "prezime2"){
+                    return a.prezime.localeCompare(b.prezime) * (-1);
+                } else if (kriterijum === "username1"){
+                    return a.username.localeCompare(b.username);
+                } else if (kriterijum === "username2"){
+                    return a.username.localeCompare(b.username) * (-1);
+                } else if (kriterijum === "bodovi1"){
+                    if (!a.uloga.includes('KUPAC')){ a.sakupljenihPoena = 0; }
+                    if (!b.uloga.includes('KUPAC')){ b.sakupljenihPoena = 0; }
+                    if (a.sakupljenihPoena < b.sakupljenihPoena) return -1;
+                    if (a.sakupljenihPoena > b.sakupljenihPoena) return 1;
+                    return 0;
+                } else if (kriterijum === "bodovi2"){
+                    if (!a.uloga.includes('KUPAC')){ a.sakupljenihPoena = 0; }
+                    if (!b.uloga.includes('KUPAC')){ b.sakupljenihPoena = 0; }
+                    if (a.sakupljenihPoena < b.sakupljenihPoena) return 1;
+                    if (a.sakupljenihPoena > b.sakupljenihPoena) return -1;
+                    return 0;
+                }
+                return 0;
+            });
         }
     },
 })
