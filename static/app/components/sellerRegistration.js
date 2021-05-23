@@ -73,11 +73,11 @@ Vue.component("register-seller", {
             }
 
             axios
-                .post("rest/register", newUser)
+                .post("rest/register-seller", newUser)
                 .then(response => {
                     console.log(response.data)
                     //localStorage.setItem('user', JSON.stringify(response.data))
-                    this.$router.push('/')
+                    this.$router.push('/users/all')
                     window.location.reload()
                 })
                 .catch(response => {

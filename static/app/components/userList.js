@@ -41,19 +41,19 @@ Vue.component("user-list", {
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="man-tip" class="col-form-label">Tip:</label>
-                                        <select v-model="filter.tip" id="man-tip">
-                                            <option value="BRONZE">Bronze</option>
-                                            <option value="SILVER">Silver</option>
-                                            <option value="GOLD">Gold</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
                                         <label for="man-uloga" class="col-form-label">Uloga:</label>
                                         <select v-model="filter.uloga" id="man-uloga">
                                             <option value="KUPAC">Kupci</option>
                                             <option value="PRODAVAC">Prodavci</option>
                                             <option value="ADMIN">Administratori</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="man-tip" class="col-form-label">Tip:</label>
+                                        <select :disabled="!filter.uloga.includes('KUPAC')" v-model="filter.tip" id="man-tip">
+                                            <option value="BRONZE">Bronze</option>
+                                            <option value="SILVER">Silver</option>
+                                            <option value="GOLD">Gold</option>
                                         </select>
                                     </div>
                                 </form>
@@ -156,9 +156,6 @@ Vue.component("user-list", {
                 this.filter.tip = '';
                 this.users = this.users.filter(x => x.uloga.includes(this.filter.uloga));
             }
-
-            //if (!this.filter.uloga.includes('ADMIN'))
-                //this.users = this.users.filter(x => x.tip.includes(this.filter.tip));
         }
     },
 })
