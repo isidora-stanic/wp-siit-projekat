@@ -1,5 +1,6 @@
 const homepage = {template: '<homepage></homepage>'}
 const register = {template: '<register></register>'}
+const registerSeller = {template: '<register-seller></register-seller>'}
 const login = {template: '<login></login>'}
 const logout = {template: '<logout></logout>'}
 const userDisplay = {template: '<user-display></user-display>'}
@@ -21,6 +22,7 @@ const router = new VueRouter({
         {path: '/', component: homepage},
         {path: '/login', component: login},
         {path: '/register', component: register},
+        {path: '/register-seller', component: registerSeller},
         {path: '/logout', component: logout},
         {path: '/userView', component: userDisplay},
         {path: '/manifestation/:id', component: manifestation},

@@ -195,6 +195,31 @@ public class Main {
             return g.toJson(k);
         });
 
+        post("/rest/register-seller", (req, res) -> {
+            HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
+
+            String username = userMap.get("username");
+            String password = userMap.get("password");
+            String ime = userMap.get("ime");
+            String prezime = userMap.get("prezime");
+            String pol = userMap.get("pol");
+            Date datumRodjenja = new SimpleDateFormat("yyyy-MM-dd")
+                    .parse(userMap.get("datumRodjenja"));
+
+            if (userDAO.getKorisnikByUsername(username) != null) {
+                res.status(400);
+                return "Korisnik sa tim korisničkim imenom već postoji";
+            }
+
+            Korisnik k = new Prodavac(username, password, ime, prezime, pol, datumRodjenja);
+            userDAO.dodajKorisnika(k);
+            userDAO.saveKorisnici();
+
+            res.type("application/json");
+            res.status(200);
+            return g.toJson(k);
+        });
+
         post("/rest/login", (req, res) -> {
             HashMap<String, String> userMap = g.fromJson(req.body(), HashMap.class);
             String username = userMap.get("username");
