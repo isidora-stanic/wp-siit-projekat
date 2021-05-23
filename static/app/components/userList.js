@@ -3,6 +3,10 @@ Vue.component("user-list", {
         return {
             users: [],
             userSearchQuery: '',
+            filter: {
+                uloga: '',
+                tip: ''
+            }
         }
     },
     props: ['context'],
@@ -22,9 +26,46 @@ Vue.component("user-list", {
             </div>
             <div class="input-group">
                 <div class="form-outline">
-                    <input type="search" class="form-control" 
-                        placeholder="Pretraga (ime)" v-model="userSearchQuery" />
+                    <input type="search" class="form-control" placeholder="Pretraga (ime)" v-model="userSearchQuery" />
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filter">Filtriranje</button>
                 </div>
+
+                <!--FILTER-->
+                <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="src-lbl" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="src-lbl">Filtriranje</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="man-tip" class="col-form-label">Tip:</label>
+                                        <select v-model="filter.tip" id="man-tip">
+                                            <option value="BRONZE">Bronze</option>
+                                            <option value="SILVER">Silver</option>
+                                            <option value="GOLD">Gold</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="man-uloga" class="col-form-label">Uloga:</label>
+                                        <select v-model="filter.uloga" id="man-uloga">
+                                            <option value="KUPAC">Kupci</option>
+                                            <option value="PRODAVAC">Prodavci</option>
+                                            <option value="ADMIN">Administratori</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
+                                <button type="button" class="btn btn-primary" @click="filtrirajKorisnike()" data-dismiss="modal">Filtriraj</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <hr />
             <div class="jumbotron row" style="padding-top: 15px; padding-bottom: 15px"
@@ -105,6 +146,19 @@ Vue.component("user-list", {
                     return true
                 return false
             }
+        },
+        filtrirajKorisnike() {
+            console.log(this.users);
+            if (this.filter.uloga.includes('KUPAC')){
+                this.users = this.users.filter(x => x.uloga.includes(this.filter.uloga));
+                this.users = this.users.filter(x => x.tip.includes(this.filter.tip));
+            } else {
+                this.filter.tip = '';
+                this.users = this.users.filter(x => x.uloga.includes(this.filter.uloga));
+            }
+
+            //if (!this.filter.uloga.includes('ADMIN'))
+                //this.users = this.users.filter(x => x.tip.includes(this.filter.tip));
         }
     },
 })
