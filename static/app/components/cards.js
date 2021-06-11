@@ -2,6 +2,7 @@ Vue.component("cards", {
     data: function() {
         return {
             karte: [],
+            backupKarte: [],
             manifestacije: [],
             pretrazeneKarte: [],
             listaKarata: [],
@@ -11,10 +12,10 @@ Vue.component("cards", {
             },
             pretraga: {
                 manifestacija: '',
-                datumOd: Date.now(),
-                datumDo: Date.now(),
+                datumOd: '', //Date.now(),
+                datumDo: '', //Date.now(),
                 cenaOd: 0,
-                cenaDo: Number.MAX_SAFE_INTEGER
+                cenaDo: 0
             },
             otkazivanje: {
                 id: '',
@@ -165,53 +166,83 @@ Vue.component("cards", {
                      .then(axios.spread((...responses) => {
                         this.manifestacije = responses[0].data
                         this.karte = responses[1].data
-                        for (let k of this.karte) {
-                           for (let m of this.manifestacije) {
-                               if (k.manifestacijaID === m.ID){
-                                   k['manifestacija'] = m
-                                   break
-                               }
-                           }
-                       }
+                        this.backupKarte = responses[1].data
+                       //  for (let k in this.karte) {
+                       //     for (let m of this.manifestacije) {
+                       //         if (this.karte[k].manifestacijaID === m.ID){
+                       //             k['manifestacija'] = m
+                       //             break
+                       //         }
+                       //     }
+                       // }
+                        this.karte.forEach((karta, index) => {
+                            for (let m of this.manifestacije) {
+                                if (this.karte[index].manifestacijaID === m.ID){
+                                    this.karte[index]['manifestacija'] = m
+                                    this.backupKarte[index]['manifestacija'] = m
+                                    break
+                                }
+                            }
+                        })
                      }))
             } else if (this.korisnickaUloga === 'KUPAC') {
                 const manifestacijeReq = axios.get('rest/manifestacije')
                 const karteReq = axios.get('rest/karte/' + this.korisnickoIme)
                 axios.all([manifestacijeReq, karteReq])
                      .then(axios.spread((...responses) => {
-                        this.manifestacije = responses[0].data
-                        this.karte = responses[1].data
-                        for (let k of this.karte) {
-                           for (let m of this.manifestacije) {
-                               if (k.manifestacijaID === m.ID){
-                                   k['manifestacija'] = m
-                                   break
-                               }
-                           }
-                       }
+                         this.manifestacije = responses[0].data
+                         this.karte = responses[1].data
+                         this.backupKarte = responses[1].data
+                       //  for (let k of this.karte) {
+                       //     for (let m of this.manifestacije) {
+                       //         if (k.manifestacijaID === m.ID){
+                       //             k['manifestacija'] = m
+                       //             break
+                       //         }
+                       //     }
+                       // }
+                         this.karte.forEach((karta, index) => {
+                             for (let m of this.manifestacije) {
+                                 if (this.karte[index].manifestacijaID === m.ID){
+                                     this.karte[index]['manifestacija'] = m
+                                     this.backupKarte[index]['manifestacija'] = m
+                                     break
+                                 }
+                             }
+                         })
                      }))
             } else if (this.korisnickaUloga === 'PRODAVAC') {
                 const manifestacijeReq = axios.get('rest/manifestacije')
                 const karteReq = axios.get('rest/karte-prodavca/' + this.korisnickoIme)
                 axios.all([manifestacijeReq, karteReq])
                 .then(axios.spread((...responses) => {
-                 this.manifestacije = responses[0].data
-                 this.karte = responses[1].data
-                 for (let k of this.karte) {
-                    for (let m of this.manifestacije) {
-                        console.log(k.manifestacijaID)
-                        if (k.manifestacijaID == m.ID){
-                            console.log(k.manifestacijaID + '\n-------------')
-                            k['manifestacija'] = m
-                            break
+                    this.manifestacije = responses[0].data
+                    this.karte = responses[1].data
+                    this.backupKarte = responses[1].data
+                //  for (let k of this.karte) {
+                //     for (let m of this.manifestacije) {
+                //         console.log(k.manifestacijaID)
+                //         if (k.manifestacijaID == m.ID){
+                //             console.log(k.manifestacijaID + '\n-------------')
+                //             k['manifestacija'] = m
+                //             break
+                //         }
+                //     }
+                // }
+                    this.karte.forEach((karta, index) => {
+                        for (let m of this.manifestacije) {
+                            if (this.karte[index].manifestacijaID === m.ID){
+                                this.karte[index]['manifestacija'] = m
+                                this.backupKarte[index]['manifestacija'] = m
+                                break
+                            }
                         }
-                    }
-                }
+                    })
                 }))
             }
 
 
-        };
+        }
     },
     methods: {
         posetiManifestaciju(manifestacijaID) {
@@ -244,26 +275,36 @@ Vue.component("cards", {
             });
         },
         pretraziKarte() {
+            this.karte = this.backupKarte
             this.pretrazeneKarte = [];
 
             for (const k of this.karte) {
-                console.log(k.manifestacija.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase()));
-                if ((k.manifestacija.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase())) &&
-                (k.cena >= this.pretraga.cenaOd && k.cena <= this.pretraga.cenaDo) &&
-                (k.datumManifestacije >= this.pretraga.datumOd && k.datumManifestacije <= this.pretraga.datumDo))
+                let kartaDatum = Date.parse(k.datumManifestacije)
+                let startDatum, endDatum
+                if (this.pretraga.datumOd.trim() && this.pretraga.datumDo.trim()) {
+                    startDatum = Date.parse(this.pretraga.datumOd)
+                    endDatum = Date.parse(this.pretraga.datumDo)
+                }
+                //console.log(k.manifestacija.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase()));
+                if ((!this.pretraga.manifestacija.trim() || k.manifestacija.ime.toUpperCase().includes(this.pretraga.manifestacija.toUpperCase())) &&
+                (this.pretraga.cenaDo === 0 || (k.cena >= this.pretraga.cenaOd && k.cena <= this.pretraga.cenaDo)) &&
+                (!this.pretraga.datumOd || !this.pretraga.datumDo || (kartaDatum >= startDatum && kartaDatum <= endDatum)))
                     this.pretrazeneKarte.push(k);
             }
-            alert(JSON.stringify(this.pretrazeneKarte));
+            //alert(JSON.stringify(this.pretrazeneKarte));
             this.karte = this.pretrazeneKarte;
 
-            this.pretraga.datumOd = Date.now();
-            this.pretraga.datumDo = Date.now();
-            this.pretraga.cenaOd = 0;
-            this.pretraga.cenaDo = Number.MAX_SAFE_INTEGER;
+            this.pretraga.datumOd = '' //Date.now();
+            this.pretraga.datumDo = '' //Date.now();
+            this.pretraga.cenaOd = 0
+            this.pretraga.cenaDo = 0 //Number.MAX_SAFE_INTEGER;
 
         },
         filtrirajKarte() {
-            this.listaKarata = this.listaKarata.filter(x => (x.tip.includes(this.filter.tip) && x.status.includes(this.filter.status)));
+            this.karte = this.backupKarte
+            this.karte = this.karte.filter(x => (
+                (!x.tip.trim() || x.tip.toUpperCase().includes(this.filter.tip.toUpperCase())) &&
+                (!x.status.trim() || x.status.toUpperCase().includes(this.filter.status.toUpperCase()))));
             //alert(JSON.stringify(this.listaKarata));
         },
         otkazi(karta) {

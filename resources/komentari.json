@@ -16,5 +16,14 @@
     "tekst": "Sjajno sjajno",
     "ocena": 5,
     "obrisan": false
+  },
+  {
+    "ID": "3654252919",
+    "korisnik": "matija",
+    "manifestacijaID": "1",
+    "prihvacenoOdProdavca": false,
+    "tekst": "Test komentar",
+    "ocena": 4,
+    "obrisan": false
   }
 ]

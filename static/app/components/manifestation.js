@@ -39,7 +39,7 @@ Vue.component("manifestation", {
                         <h6>VIP: <b>{{manifestacija.cenaKarte * 4}}</b> RSD</h6>
                         <p>Preostalo karata: {{manifestacija.ukupnoMesta - manifestacija.prodatoKarata}}</p>
                         <p :class="{'badge-primary': manifestacija.status === 'AKTIVNA', 'badge-warning': manifestacija.status === 'NEAKTIVNA'}" class="badge">{{manifestacija.status}}</p>
-                        <div v-if="manifestacija.status === 'AKTIVNA' && Date.parse(manifestacija.vremeOdrzavanja) < new Date">
+                        <div v-if="manifestacija.status === 'AKTIVNA' && Date.parse(manifestacija.vremeOdrzavanja) > new Date()">
                         <hr/>
                         <div class="row container">
                                             <!--<button class="btn btn-secondary col" @click="kupovina.kolicina--">-</button>
@@ -105,7 +105,7 @@ Vue.component("manifestation", {
                                     </select>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" @click="postComment">Objavi</button>
+                            <button class="btn btn-primary" @click.prevent="postComment">Objavi</button>
                         </form>
                         <hr />
                     </div>

@@ -2,6 +2,7 @@ Vue.component("manifestation-list", {
     data: function() {
         return {
             manifestacije: [],
+            backupManifestacija: [],
             filter: {
                 tip: '',
                 nerasprodateKarte: false
@@ -9,10 +10,11 @@ Vue.component("manifestation-list", {
             pretraga: {
                 ime: '',
                 mesto: '',
-                datumOd: Date.now(),
-                datumDo: Date.now(),
+                tip: '',
+                datumOd: '', //Date.now(),
+                datumDo: '', //Date.now(),
                 cenaOd: 0,
-                cenaDo: Number.MAX_SAFE_INTEGER
+                cenaDo: 0 //Number.MAX_SAFE_INTEGER
             },
             komentari: []
         }
@@ -96,7 +98,8 @@ Vue.component("manifestation-list", {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light" data-dismiss="modal">Zatvori</button>
-                                    <button type="button" class="btn btn-primary" @click="pretraziManifestacije()">Pretraži</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal" 
+                                                @click="pretraziManifestacije()">Pretraži</button>
                                 </div>
                             </div>
                         </div>
@@ -197,6 +200,7 @@ Vue.component("manifestation-list", {
             .get(path)
             .then(response => {
                 this.manifestacije = response.data
+                this.backupManifestacija = response.data
             })
 
     },
@@ -239,30 +243,40 @@ Vue.component("manifestation-list", {
             });
         },
         pretraziManifestacije() {
+            this.manifestacije = this.backupManifestacija
             this.pretrazeneManifestacije = [];
             //TODO: DODATI OSTALE PROVERE........
 
             for (const k of this.manifestacije) {
-                console.log(k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase()));
+                let manDatum = Date.parse(k.vremeOdrzavanja)
+                let startDatum, endDatum
+                if (this.pretraga.datumOd.trim() && this.pretraga.datumDo.trim()) {
+                    startDatum = Date.parse(this.pretraga.datumOd)
+                    endDatum = Date.parse(this.pretraga.datumDo)
+                }
+                //console.log(k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase()));
 
-                if ((k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase())) &&
-                ((k.lokacija.adresa.mesto.toUpperCase().includes(this.pretraga.mesto.toUpperCase())) ||
-                (k.lokacija.adresa.ulicaIBroj.toUpperCase().includes(this.pretraga.mesto.toUpperCase()))) &&
-                (k.cenaKarte >= this.pretraga.cenaOd && k.cenaKarte <= this.pretraga.cenaDo) &&
-                (k.vremeOdrzavanja >= this.pretraga.datumOd && k.vremeOdrzavanja <= this.pretraga.datumDo))
+                if ((!this.pretraga.ime.trim() || k.ime.toUpperCase().includes(this.pretraga.ime.toUpperCase())) &&
+                ((!this.pretraga.mesto.trim() || k.lokacija.adresa.mesto.toUpperCase().includes(this.pretraga.mesto.toUpperCase())) ||
+                (!this.pretraga.mesto.trim() || k.lokacija.adresa.ulicaIBroj.toUpperCase().includes(this.pretraga.mesto.toUpperCase()))) &&
+                (this.pretraga.cenaDo === 0 || (k.cenaKarte >= this.pretraga.cenaOd && k.cenaKarte <= this.pretraga.cenaDo)) &&
+                (!this.pretraga.datumOd || !this.pretraga.datumDo || (manDatum >= startDatum && manDatum <= endDatum)) &&
+                (!this.pretraga.tip.trim() || k.tip.toUpperCase().includes(this.pretraga.tip.toUpperCase().trim())))
                     this.pretrazeneManifestacije.push(k);
             }
-            alert(JSON.stringify(this.pretrazeneManifestacije));
+            //alert(JSON.stringify(this.pretrazeneManifestacije));
             this.manifestacije = this.pretrazeneManifestacije;
 
             this.pretraga.mesto = '';
-            this.pretraga.datumOd = Date.now();
-            this.pretraga.datumDo = Date.now();
+            this.pretraga.datumOd = '' //Date.now();
+            this.pretraga.datumDo = '' //Date.now();
+            this.pretraga.tip = ''
             this.pretraga.cenaOd = 0;
-            this.pretraga.cenaDo = Number.MAX_SAFE_INTEGER;
+            this.pretraga.cenaDo = 0;
 
         },
         filtrirajKarte() {
+            this.manifestacije = this.backupManifestacija
             this.manifestacije = this.manifestacije.filter(x => (x.tip.toLowerCase().includes(this.filter.tip.toLowerCase())));
             if (this.filter.nerasprodateKarte)
                 this.manifestacije = this.manifestacije.filter(x => (x.ukupnoMesta - x.prodatoKarata > 0));

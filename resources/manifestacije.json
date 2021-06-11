@@ -5,14 +5,14 @@
     "tip": "Koncert",
     "ukupnoMesta": 100,
     "prodatoKarata": -1,
-    "vremeOdrzavanja": "Apr 4, 2021, 8:00:00 PM",
+    "vremeOdrzavanja": "Apr 4, 2021, 6:00:00 PM",
     "cenaKarte": 1000.0,
-    "status": "NEAKTIVNA",
+    "status": "AKTIVNA",
     "lokacija": {
       "geografskaSirina": 25.0,
       "geografskaDuzina": 35.0,
       "adresa": {
-        "ulicaIBroj": "Heroja Jerkovica 37",
+        "ulicaIBroj": "Heroja Jerkovicha 37",
         "mesto": "Uzice",
         "postanskiBroj": "31000"
       }
@@ -78,6 +78,27 @@
         "ulicaIBroj": "Trg partizana 27",
         "mesto": "Uzice",
         "postanskiBroj": "31000"
+      }
+    },
+    "slika": "zvonko_bogdan_2019.jpg",
+    "obrisana": false
+  },
+  {
+    "ID": "4829190577",
+    "ime": "MX",
+    "tip": "Zurka",
+    "ukupnoMesta": 50,
+    "prodatoKarata": 2,
+    "vremeOdrzavanja": "Jun 28, 2021, 9:00:00 PM",
+    "cenaKarte": 1200.0,
+    "status": "AKTIVNA",
+    "lokacija": {
+      "geografskaSirina": 22.0,
+      "geografskaDuzina": 44.0,
+      "adresa": {
+        "ulicaIBroj": "Zmaj jovina 22",
+        "mesto": "Novi Sad",
+        "postanskiBroj": "21000"
       }
     },
     "slika": "zvonko_bogdan_2019.jpg",
